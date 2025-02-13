@@ -68,23 +68,23 @@ def HoWDe_compute(df_stops=None, config={}, stops_output=True, verbose=False):
 # ############## MAIN HoWDe Handling ##################
 # #####################################################
 def HoWDe_labelling(
-    input_data=None,
-    spark=None,
-    HW_PATH="./",
-    SAVE_PATH=None,
-    SAVE_NAME="",
-    save_multiple=False,
-    edit_config_default=None,
-    range_window=42,
-    bnd_none_day=6,
-    bnd_none_home=0.4,
-    bnd_none_work=0.8,
-    range_freq_home=0.2,
-    range_freq_work_h=0.2,
-    range_freq_work_d=0.2,
-    stops_output=True,
-    verbose=False,
-    driver_memory=250,
+    input_data = None,
+    spark = None,
+    HW_PATH = "./",
+    SAVE_PATH = None,
+    SAVE_NAME = "",
+    save_multiple = False,
+    edit_config_default = None,
+    range_window = 42,
+    dhn = 6,    # bnd_none_day
+    dn_H = 0.4, # bnd_none_home
+    dn_W = 0.8, # bnd_none_work
+    hf_H = 0.2, # range_freq_home
+    hf_W = 0.2, # range_freq_work_h
+    df_W = 0.2, # range_freq_work_d
+    stops_output = True,
+    verbose = False,
+    driver_memory = 250,
 ):
     """
     Perform Home and Work Detection (HoWDe)
@@ -142,23 +142,23 @@ def HoWDe_labelling(
     range_window : float, default=42
         Size of the window used to detect home and work locations.
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    bnd_none_day : float, default=6
+    dhn : float, default=6 (same as "bnd_none_day" in config)
         Day level, at least (9 - bnd_nan) hours of data in hourly range.
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    bnd_none_home : float, default=0.4
+    dn_H : float, default=0.4 (same as "bnd_none_day" in config)
         Sliding window: min ratio of none in window range for home location detection.
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    bnd_none_work : float, default=0.8
+    dn_W : float, default=0.8 (same as "bnd_none_day" in config)
         Sliding window: min ratio of none in window range for work locationd etection.
         (consider that this value is expected to be higher than the one for home to account for non-weekend workers)
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    range_freq_home : float, default=0.2
+    hf_H : float, default=0.2 (same as "bnd_freq_home" in config)
         Sliding window: min frequency of visits within window for a stop location to be considered home.
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    range_freq_work_h : flaot, default=0.2
+    hf_H : flaot, default=0.2 (same as "bnd_freqH_work" in config)
         Sliding window: min frequency of visits within window for a stop location to be considered work (hourly level, at least bnd_freq_h ratio of the work range has to be at loc).
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    range_freq_work_d : float, default=0.2
+    hf_W : float, default=0.2 (same as "bnd_freqD_work" in config)
         Sliding window: min fraction of days with visits within window for a stop location to be considered work (day level, at least bnd_freq_d ratio of days in window locA has to appear).
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
 
@@ -193,22 +193,22 @@ def HoWDe_labelling(
     ### Convert all HoWDe explorable parameters to lists ###
     # convert all algorithm parameters to lists
     (
-        bnd_none_day,
-        bnd_none_home,
-        bnd_none_work,
+        dhn,
+        dn_H,
+        dn_W,
         range_window,
-        range_freq_home,
-        range_freq_work_h,
-        range_freq_work_d,
+        hf_H,
+        hf_H,
+        hf_W,
     ) = check_and_convert(
         [
-            bnd_none_day,
-            bnd_none_home,
-            bnd_none_work,
+            dhn,
+            dn_H,
+            dn_W,
             range_window,
-            range_freq_home,
-            range_freq_work_h,
-            range_freq_work_d,
+            hf_H,
+            hf_H,
+            hf_W,
         ]
     )
 
@@ -263,12 +263,12 @@ def HoWDe_labelling(
     iters = list(
         itertools.product(
             range_window,
-            bnd_none_day,
-            bnd_none_home,
-            range_freq_home,
-            bnd_none_work,
-            range_freq_work_h,
-            range_freq_work_d,
+            dhn,
+            dn_H,
+            hf_H,
+            dn_W,
+            hf_W,
+            df_W,
         )
     )
     for rW, noneD, noneH, freqH, noneW, freqWh, freqWd in tqdm(iters):
