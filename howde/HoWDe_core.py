@@ -155,7 +155,7 @@ def HoWDe_labelling(
     hf_H : float, default=0.2 (same as "bnd_freq_home" in config)
         Sliding window: min frequency of visits within window for a stop location to be considered home.
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    hf_H : flaot, default=0.2 (same as "bnd_freqH_work" in config)
+    hf_W : flaot, default=0.2 (same as "bnd_freqH_work" in config)
         Sliding window: min frequency of visits within window for a stop location to be considered work (hourly level, at least bnd_freq_h ratio of the work range has to be at loc).
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
     hf_W : float, default=0.2 (same as "bnd_freqD_work" in config)
@@ -198,8 +198,8 @@ def HoWDe_labelling(
         dn_W,
         range_window,
         hf_H,
-        hf_H,
         hf_W,
+        df_W,
     ) = check_and_convert(
         [
             dhn,
@@ -207,8 +207,8 @@ def HoWDe_labelling(
             dn_W,
             range_window,
             hf_H,
-            hf_H,
             hf_W,
+            df_W,
         ]
     )
 
