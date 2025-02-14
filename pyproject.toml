@@ -1,3 +1,33 @@
 [build-system]
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "HoWDe"
+version = "0.1.1"
+description = "A package for detecting home and work locations from timestamped stop locations."
+authors = [
+    { name = "Lorenzo Lucchini", email = "lorenzo.f.lucchini.work@gmail.com" },
+    { name = "Silvia De Sojo Caso", email = "sdesojoc@gmail.com" }
+]
+license = { file = "LICENSE.txt" }
+readme = "README.md"
+requires-python = ">=3.6"
+dependencies = [
+    "numpy",
+    "pandas",
+    "python-dateutil",
+    "tqdm",
+    "pyspark"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+
+[project.urls]
+Homepage = "https://github.com/LLucchini/HoWDe"
+Repository = "https://github.com/LLucchini/HoWDe"
+Documentation = "https://github.com/LLucchini/HoWDe/blob/main/README.md"
