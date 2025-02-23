@@ -4,7 +4,7 @@
 
 ## Features
 
-- Processes stop location datasets to detect home and work locations.
+- Processes stop location datasets to detect home and work locations. 
 - Allows customization through various parameters to fine-tune detection heuristics.
 - Supports batch processing with multiple parameter configurations.
 - Outputs results as a PySpark DataFrame for seamless integration with big data workflows.
