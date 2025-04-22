@@ -77,11 +77,11 @@ def HoWDe_labelling(
     edit_config_default = None,
     range_window = 42,
     dhn = 6,    # bnd_none_day
-    dn_H = 0.4, # bnd_none_home
-    dn_W = 0.8, # bnd_none_work
-    hf_H = 0.2, # range_freq_home
-    hf_W = 0.2, # range_freq_work_h
-    df_W = 0.2, # range_freq_work_d
+    dn_H = 0.7, # bnd_none_home
+    dn_W = 0.5, # bnd_none_work
+    hf_H = 0.7, # range_freq_home
+    hf_W = 0.4, # range_freq_work_h
+    df_W = 0.6, # range_freq_work_d
     stops_output = True,
     verbose = False,
     driver_memory = 250,
@@ -145,20 +145,20 @@ def HoWDe_labelling(
     dhn : float, default=6 (same as "bnd_none_day" in config)
         Day level, at least (9 - bnd_nan) hours of data in hourly range.
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    dn_H : float, default=0.4 (same as "bnd_none_day" in config)
+    dn_H : float, default=0.7 (same as "bnd_none_day" in config)
         Sliding window: min ratio of none in window range for home location detection.
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    dn_W : float, default=0.8 (same as "bnd_none_day" in config)
+    dn_W : float, default=0.5 (same as "bnd_none_day" in config)
         Sliding window: min ratio of none in window range for work locationd etection.
         (consider that this value is expected to be higher than the one for home to account for non-weekend workers)
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    hf_H : float, default=0.2 (same as "bnd_freq_home" in config)
+    hf_H : float, default=0.7 (same as "bnd_freq_home" in config)
         Sliding window: min frequency of visits within window for a stop location to be considered home.
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    hf_W : flaot, default=0.2 (same as "bnd_freqH_work" in config)
+    hf_W : flaot, default=0.4 (same as "bnd_freqH_work" in config)
         Sliding window: min frequency of visits within window for a stop location to be considered work (hourly level, at least bnd_freq_h ratio of the work range has to be at loc).
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
-    hf_W : float, default=0.2 (same as "bnd_freqD_work" in config)
+    hf_W : float, default=0.6 (same as "bnd_freqD_work" in config)
         Sliding window: min fraction of days with visits within window for a stop location to be considered work (day level, at least bnd_freq_d ratio of days in window locA has to appear).
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
 
