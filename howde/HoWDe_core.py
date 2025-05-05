@@ -52,7 +52,7 @@ def HoWDe_compute(df_stops=None, config={}, stops_output=True, verbose=False):
 
     ## Select output style: stops or change level
     if stops_output:
-        df_f = get_stop_level(df_stops, df_f).drop(*["HomPot_loc", "EmpPot_loc"])
+        df_f = get_stop_level(df_stops, df_f)#.drop(*["HomPot_loc", "EmpPot_loc"])
     else:
         df_f = get_change_level(df_f)
 
