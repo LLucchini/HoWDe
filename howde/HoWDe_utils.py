@@ -612,6 +612,8 @@ def get_stop_level(df_stops, df_traj):
         )
         .withColumnRenamed("s_date", "date")
         .select(cols)
+        .withColumnRenamed("HomPot_loc", "home_loc")
+        .withColumnRenamed("EmpPot_loc", "work_loc")
     )
     return stops_hw
 
