@@ -33,7 +33,7 @@ def HoWDe_labelling(
     save_multiple=False,
     edit_config_default=None,
     range_window=42,
-    dhn=6,
+    dhn=3,
     dn_H=0.4,
     dn_W=0.8,
     hf_H=0.2,
