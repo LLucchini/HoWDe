@@ -76,7 +76,7 @@ def HoWDe_labelling(
     save_multiple = False,
     edit_config_default = None,
     range_window = 42,
-    dhn = 6,    # bnd_none_day
+    dhn = 3,    # bnd_none_day
     dn_H = 0.7, # bnd_none_home
     dn_W = 0.5, # bnd_none_work
     hf_H = 0.7, # range_freq_home
