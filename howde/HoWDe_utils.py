@@ -307,7 +307,7 @@ def dict_loc_frac_daily(
             nan_cnt = 0
         return (
             {k: round(v / (hour_range - nan_cnt), 3) for k, v in dic_f.items()}
-            if nan_cnt <= bnd_nan
+            if hour_range - nan_cnt <= bnd_nan
             else None
         )
 
