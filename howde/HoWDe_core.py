@@ -75,7 +75,8 @@ def HoWDe_labelling(
     SAVE_NAME = "",
     save_multiple = False,
     edit_config_default = None,
-    range_window = 42,
+    range_window_home = 28,
+    range_window_work = 42,
     dhn = 3,    # bnd_none_day
     dn_H = 0.7, # bnd_none_home
     dn_W = 0.5, # bnd_none_work
@@ -139,8 +140,11 @@ def HoWDe_labelling(
 
     ########### HoWDe explorable parameters ("soft") #################
     # For additional details on how these parameters affect the labelling flow see the PAPER.
-    range_window : float, default=42
-        Size of the window used to detect home and work locations.
+    range_window_home : float, default=28
+        Size of the window used to detect home locations.
+        If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
+    range_window_work : float, default=42
+        Size of the window used to detect work locations.
         If a list is provided with multiple values, all provided values will be explored and labels will be computed for all the possible parameters' combinations.
     dhn : float, default=6 (same as "bnd_none_day" in config)
         Day level, at least (9 - bnd_nan) hours of data in hourly range.
@@ -196,7 +200,8 @@ def HoWDe_labelling(
         dhn,
         dn_H,
         dn_W,
-        range_window,
+        range_window_home,
+        range_window_work,
         hf_H,
         hf_W,
         df_W,
@@ -205,7 +210,8 @@ def HoWDe_labelling(
             dhn,
             dn_H,
             dn_W,
-            range_window,
+            range_window_home,
+            range_window_work,
             hf_H,
             hf_W,
             df_W,
@@ -262,7 +268,8 @@ def HoWDe_labelling(
     print("HoWDe Labelling: computing LABs ...")
     iters = list(
         itertools.product(
-            range_window,
+            range_window_home,
+            range_window_work,
             dhn,
             dn_H,
             hf_H,
@@ -271,10 +278,11 @@ def HoWDe_labelling(
             df_W,
         )
     )
-    for rW, noneD, noneH, freqH, noneW, freqWh, freqWd in tqdm(iters):
+    for rW_H, rW_W, noneD, noneH, freqH, noneW, freqWh, freqWd in tqdm(iters):
         ## APPLY BY CONFIG TYPE
         config_ = config.copy()
-        config_["range_window"] = rW
+        config_["range_window_home"] = rW_H
+        config_["range_window_work"] = rW_W
         config_["bnd_nan"] = F.lit(noneD)
         config_["bnd_none_home"] = F.lit(noneH)
         config_["bnd_freq_home"] = F.lit(freqH)
@@ -284,7 +292,7 @@ def HoWDe_labelling(
 
         ### Saving labels
         if (not SAVE_PATH is None) & (save_multiple):
-            fname = f"{SAVE_NAME}-rW{str(rW)}-bN{noneD}-nH{str(noneH)}-fH{str(freqH)}-nW{str(noneW)}-fWh{str(freqWh)}-fWdv{str(freqWd)}"
+            fname = f"{SAVE_NAME}-rW_H{str(rW_H)}-bN{noneD}-nH{str(noneH)}-fH{str(freqH)}-rW_W{str(rW_W)}-nW{str(noneW)}-fWh{str(freqWh)}-fWdv{str(freqWd)}"
             stops_hw_lab = HoWDe_compute(
                 stops_labelled, config_, stops_output=stops_output, verbose=verbose
             )

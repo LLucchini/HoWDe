@@ -342,7 +342,7 @@ def sw_reddic(d_sw: dict, bnd_freq: float) -> dict:
 ## DETECT HOME LOCATION ##
 ##########################
 def find_home(df_th, config):
-    range_window = config["range_window"]
+    range_window = config["range_window_home"]
     start_hour_day = config["start_hour_day"]
     end_hour_day = config["end_hour_day"]
     data_for_predict = config["data_for_predict"]
@@ -433,7 +433,7 @@ def find_home(df_th, config):
 ## DETECT WORK LOCATION ##
 ##########################
 def find_work(df_tH, config):
-    range_window = config["range_window"]
+    range_window = config["range_window_work"]
     start_hour_work = config["start_hour_work"]
     end_hour_work = config["end_hour_work"]
     data_for_predict = config["data_for_predict"]
