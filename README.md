@@ -70,7 +70,11 @@ def HoWDe_labelling(
 
 #### Returns
 
-- A PySpark DataFrame with an additional column `location_type` indicating the detected location type ('H' for Home, 'W' for Work, or None). The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, location_type represents a day-level assessment, taking into account observations from neighboring days within the range t+/- range_window/2.
+A PySpark DataFrame with three additional columns:
+- `detect_H_loc` the location id of the location identified as Home.  The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, represents a day-level assessment, taking into account observations from neighboring days within the range t+/- range_window/2.
+- `detect_W_loc` the location id of the location identified as Work.  The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, represents a day-level assessment, taking into account observations from neighboring days within the range t+/- range_window/2.
+- `location_type` indicating the detected location type ('H' for Home, 'W' for Work, or None). The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, location_type represents a day-level assessment, taking into account observations from neighboring days within the range t+/- range_window/2.
+
 
 ## Example Usage
 
