@@ -669,8 +669,8 @@ def get_change_level(df):
         .withColumn("end_date", F.unix_timestamp(F.col("end_date")))
         ## Keep only change level
         .select(["useruuid", "start_date", "end_date", "HomPot_loc", "EmpPot_loc"])
-        .withColumnRenamed("HomPot_loc", "home_loc")
-        .withColumnRenamed("EmpPot_loc", "work_loc")
+        .withColumnRenamed("HomPot_loc", "detect_H_loc")
+        .withColumnRenamed("EmpPot_loc", "detect_W_loc")
         .dropDuplicates()
     )
     return df
