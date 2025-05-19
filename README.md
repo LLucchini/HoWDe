@@ -32,7 +32,8 @@ def HoWDe_labelling(
     SAVE_NAME='',
     save_multiple=False,
     edit_config_default=None,
-    range_window=42,
+    range_window_home=28,
+    range_window_work=42,
     dhn=3,
     dn_H=0.4,
     dn_W=0.8,
@@ -57,7 +58,8 @@ def HoWDe_labelling(
 - `SAVE_NAME` (str, default=''): Name of the output file. Used as a suffix if `save_multiple` is True.
 - `save_multiple` (bool, default=False): If True, saves multiple output files for each combination of parameters. Requires `SAVE_NAME` to be specified.
 - `edit_config_default` (dict, default=None): Dictionary to override default configuration settings.
-- `range_window` (float or list, default=42): Size of the window used to detect home and work locations. Can be a list to explore multiple values.
+- `range_window_home` (float or list, default=42): Size of the window used to detect home locations. Can be a list to explore multiple values.
+- `range_window_work` (float or list, default=42): Size of the window used to detect work locations. Can be a list to explore multiple values.
 - `dhn` (float or list, default=6): Minimum hours of data required in a day. Can be a list to explore multiple values.
 - `dn_H` (float or list, default=0.4): Minimum ratio of presence required at a location to label it as 'Home'. Can be a list to explore multiple values.
 - `dn_W` (float or list, default=0.8): Minimum ratio of presence required at a location to label it as 'Work'. Can be a list to explore multiple values.
@@ -71,9 +73,9 @@ def HoWDe_labelling(
 #### Returns
 
 A PySpark DataFrame with three additional columns:
-- `detect_H_loc` the location id of the location identified as Home.  The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, represents a day-level assessment, taking into account observations from neighboring days within the range t+/- range_window/2.
-- `detect_W_loc` the location id of the location identified as Work.  The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, represents a day-level assessment, taking into account observations from neighboring days within the range t+/- range_window/2.
-- `location_type` indicating the detected location type ('H' for Home, 'W' for Work, or None). The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, location_type represents a day-level assessment, taking into account observations from neighboring days within the range t+/- range_window/2.
+- `detect_H_loc` the location id of the location identified as Home.  The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, represents a day-level assessment, taking into account observations from neighboring days within the range t+/- range_window_home/2.
+- `detect_W_loc` the location id of the location identified as Work.  The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, represents a day-level assessment, taking into account observations from neighboring days within the range t+/- range_window_work/2.
+- `location_type` indicating the detected location type ('H' for Home, 'W' for Work, or None). The label is assigned based on whether the location satisfies all filtering criteria within a sliding time window. As such, location_type represents a day-level assessment.
 
 
 ## Example Usage
@@ -94,7 +96,8 @@ input_data = spark.read.parquet('path_to_your_data.parquet')
 labeled_data = HoWDe_labelling(
     input_data=input_data,
     spark=spark,
-    range_window=42,
+    range_window_home=28,
+    range_window_work=42,
     dhn=6,
     dn_H=0.4,
     dn_W=0.8,
@@ -120,7 +123,8 @@ HW_PATH = './'
 # Run HoWDe labelling
 labeled_data = HoWDe_labelling(
     HW_PATH=HW_PATH,
-    range_window=42,
+    range_window_home=28,
+    range_window_work=42,
     dhn=6,
     dn_H=0.4,
     dn_W=0.8,
