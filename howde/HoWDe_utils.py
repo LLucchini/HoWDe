@@ -59,7 +59,7 @@ def pre_process_stops(spark=None, stops=None, config={}):
         INPUT: Stops as pyspark dataframe
             In case start and end times are already in local timestamp set "is_time_local" to "True"
         OUTPUT: formatted stops as pyspark dataframe
-        
+
         WARNING: following the "Infostop" notation, this function additionally drops all stops labelled as "-1"
             This notation should be avoided to label meaningful stop locations.
         """
@@ -307,7 +307,7 @@ def dict_loc_frac_daily(
             nan_cnt = 0
         return (
             {k: round(v / (hour_range - nan_cnt), 3) for k, v in dic_f.items()}
-            if hour_range - nan_cnt <= bnd_nan
+            if hour_range - nan_cnt >= bnd_nan
             else None
         )
 
