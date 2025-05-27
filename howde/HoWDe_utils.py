@@ -52,7 +52,7 @@ def check_and_convert(vars):
     return vars_new
 
 
-def pre_process_stops(spark=None, stops=None, config={}):
+def pre_process_stops(stops=None, config={}):
     ### GET CORRECT STOPS DATA FORMAT ###
     def format_stop_data(df=stops, config=config):
         """

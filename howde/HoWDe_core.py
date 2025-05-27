@@ -52,7 +52,7 @@ def HoWDe_compute(df_stops=None, config={}, stops_output=True, verbose=False):
 
     ## Select output style: stops or change level
     if stops_output:
-        df_f = get_stop_level(df_stops, df_f)#.drop(*["HomPot_loc", "EmpPot_loc"])
+        df_f = get_stop_level(df_stops, df_f)  # .drop(*["HomPot_loc", "EmpPot_loc"])
     else:
         df_f = get_change_level(df_f)
 
@@ -68,24 +68,24 @@ def HoWDe_compute(df_stops=None, config={}, stops_output=True, verbose=False):
 # ############## MAIN HoWDe Handling ##################
 # #####################################################
 def HoWDe_labelling(
-    input_data = None,
-    spark = None,
-    HW_PATH = "./",
-    SAVE_PATH = None,
-    SAVE_NAME = "",
-    save_multiple = False,
-    edit_config_default = None,
-    range_window_home = 28,
-    range_window_work = 42,
-    dhn = 3,    # bnd_none_day
-    dn_H = 0.7, # bnd_none_home
-    dn_W = 0.5, # bnd_none_work
-    hf_H = 0.7, # range_freq_home
-    hf_W = 0.4, # range_freq_work_h
-    df_W = 0.6, # range_freq_work_d
-    stops_output = True,
-    verbose = False,
-    driver_memory = 250,
+    input_data=None,
+    spark=None,
+    HW_PATH="./",
+    SAVE_PATH=None,
+    SAVE_NAME="",
+    save_multiple=False,
+    edit_config_default=None,
+    range_window_home=28,
+    range_window_work=42,
+    dhn=3,  # bnd_none_day
+    dn_H=0.7,  # bnd_none_home
+    dn_W=0.5,  # bnd_none_work
+    hf_H=0.7,  # range_freq_home
+    hf_W=0.4,  # range_freq_work_h
+    df_W=0.6,  # range_freq_work_d
+    stops_output=True,
+    verbose=False,
+    driver_memory=250,
 ):
     """
     Perform Home and Work Detection (HoWDe)
@@ -112,7 +112,8 @@ def HoWDe_labelling(
         If not provided the data will be loaded directly using the "HW_PATH" directory
     spark : pyspark.sql.session.SparkSession, default=None
         pyspark.sql.session.SparkSession used to load the input_data.
-        If input data is provided this parameter is mandatory.
+        If input data is provided this parameter is not mandatory.
+
     HW_PATH : str, default='./'
         Path to the stop location data. Input data are expected in .parquet format.
         Only .parquet files contained in the provided directory will be loaded. Data will be loaded as a pyspark.sql.dataframe.DataFrame.
@@ -246,17 +247,17 @@ def HoWDe_labelling(
         )
 
     # Check for mandatory fields
-    # mandatory_fields = ['useruuid','loc','start','end']
     mandatory_fields = ["useruuid", "loc", "start", "end"]
     if not config["is_time_local"]:
         mandatory_fields + ["tz_hour_start", "tz_minute_start"]
+
     if not all(column in input_data.columns for column in mandatory_fields):
         missing = [col for col in mandatory_fields if not col in input_data.columns]
         raise Exception(
             f"Column missing ({missing})! Read documentation for mandatory fields: https://github.com/LLucchini/HoWDe/README.md"
         )
     # Reshape input data
-    stops_labelled = pre_process_stops(spark=spark, stops=input_data, config=config)
+    stops_labelled = pre_process_stops(stops=input_data, config=config)
     stops_labelled = stops_labelled.cache()
 
     ###########################################################
