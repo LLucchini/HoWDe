@@ -60,11 +60,11 @@ def HoWDe_labelling(
 - `edit_config_default` (dict, default=None): Dictionary to override default configuration settings.
 - `range_window_home` (float or list, default=42): Size of the window used to detect home locations. Can be a list to explore multiple values.
 - `range_window_work` (float or list, default=42): Size of the window used to detect work locations. Can be a list to explore multiple values.
-- `dhn` (float or list, default=6): Minimum hours of data required in a day. Can be a list to explore multiple values.
-- `dn_H` (float or list, default=0.4): Minimum ratio of presence required at a location to label it as 'Home'. Can be a list to explore multiple values.
-- `dn_W` (float or list, default=0.8): Minimum ratio of presence required at a location to label it as 'Work'. Can be a list to explore multiple values.
-- `hf_H` (float or list, default=0.2): Minimum frequency of visits within the window for a location to be considered 'Home'. Can be a list to explore multiple values.
-- `hf_W` (float or list, default=0.2): Minimum frequency of visits within work hours for a location to be considered 'Work'. Can be a list to explore multiple values.
+- `dhn` (float or list, default=3): Min. number of night/business hourly-bins with data required in a day. Can be a list to explore multiple values.
+- `dn_H` (float or list, default=0.4): Max. fraction of days without data in a window for Home to be detected on a given day. Can be a list to explore multiple values.
+- `dn_W` (float or list, default=0.8): Max. fraction of days without data in a window for Work to be detected on a given day. Can be a list to explore multiple values.
+- `hf_H` (float or list, default=0.2): Min. fraction of night hourly-bins (avg. over days in the window) for a location to be considered 'Home'. Can be a list to explore multiple values.
+- `hf_W` (float or list, default=0.2):  Min. fraction of work hourly-bins (avg. over days in the window) for a location to be considered 'Work'. Can be a list to explore multiple values.
 - `df_W` (float or list, default=0.2): Minimum fraction of days with visits within the window for a location to be considered 'Work'. Can be a list to explore multiple values.
 - `stops_output` (bool, default=True): If True, outputs results with stops split within day limits and an additional `location_type` column. If False, outputs a condensed DataFrame with only changes in detected home and work locations.
 - `verbose` (bool, default=False): If True, reports processing steps.
