@@ -51,7 +51,7 @@ def HoWDe_labelling(
 - `tz_hour_start`, `tz_minute_start`(optional): If timestamps are in UTC, these are used to shift them to local time
 - `country`(optional): If not provided, a dummy "GL0B" will be added
 
-💡 Scalability Tip: This package includes heavy computations (e.g., window functions, UDFs) that can fail on larger datasets (>50 MB) if the data is not well distributed. Use df.repartition("useruuid") to evenly distribute data across partitions and enable efficient parallel processing. This helps Spark avoid memory bottlenecks and makes better use of available resources.
+💡 Scalability Tip: This package includes heavy computations (e.g., window functions, UDFs) that can fail on larger datasets. We recommend using df.repartition("useruuid") to evenly distribute data across partitions and enable efficient parallel processing. This helps Spark avoid memory bottlenecks and makes better use of available resources.
 
 #### ⚙️ Key Parameters
 - `input_data` (PySpark DataFrame, default=None): Input dataset containing all mandatory columns: useruuid, loc, start, end.
