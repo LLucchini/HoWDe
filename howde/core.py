@@ -803,7 +803,7 @@ def get_stop_level(df_stops, df_traj):
         .withColumnRenamed("EmpPot_loc", "detect_W_loc")
     )
 
-    return stops_hw
+    return stops_hw.drop(*["stop_duration"])
 
 
 # === Change-Level Output ===
