@@ -46,7 +46,7 @@ def HoWDe_labelling(
 #### 📥 Input Data Parameters
 The input data should include the following columns:
 - `useruuid` (str or int): unique user identifier
-- `loc` (str or int): stop location ID (unique by useruuid) - WARNING: avoid using "-1" loc labels to identify relevant location information (following \href{Infostop){https://github.com/ulfaslak/infostop?tab=readme-ov-file} notation system, those stops are automatically dropped)
+- `loc` (str or int): stop location ID (unique by useruuid) - WARNING: avoid using "-1" loc labels to identify relevant location information (following [Infostop](https://github.com/ulfaslak/infostop?tab=readme-ov-file) notation system, those stops are automatically dropped)
 - `start`(long): Unix timestamp (start of stop)
 - `end` (long): Unix timestamp (end of stop)
 - `tz_hour_start`, `tz_minute_start`(optional): If timestamps are in UTC, these are used to shift them to local time
