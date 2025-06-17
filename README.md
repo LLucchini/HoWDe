@@ -45,7 +45,7 @@ def HoWDe_labelling(
 
 #### 📥 Input Data Parameters
 The input data should include the following columns:
-- `useruuid` (str): unique user identifier
+- `useruuid` (str or int): unique user identifier
 - `loc` (str or int): stop location ID (unique by useruuid) - WARNING: avoid using "-1" loc labels to identify relevant location information. Following the "Infostop" notation system, those stops are automatically dropped
 - `start`(long): Unix timestamp (start of stop)
 - `end` (long): Unix timestamp (end of stop)
