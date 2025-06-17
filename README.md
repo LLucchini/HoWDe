@@ -63,13 +63,13 @@ def HoWDe_labelling(
 - `hf_H` (float or list): Minimum average fraction of night-hour bins (across days in the window) required for a location to qualify as ‘Home’. (*)
 - `hf_W` (float or list): Minimum average fraction of work-hour bins (across days in the window) required for a location to qualify as ‘Work’. (*)
 - `df_W` (float or list): Minimum fraction of days within the window a location must be visited to qualify as ‘Work’. (*)
-- `stops_output` (bool): If `stop`, returns stop-level data with `location_type` and one row per stop. If `change`, returns a compact DataFrame with only one row per day with home/work location changes.
 
 (*) Indicates that the parameter can be passed as a list to explore multiple configurations in a single run.
 
 💡 Tuning Recommendation: When adjusting detection parameters, start by refining the data quality constraints (`dn_H`, `dn_W`) and frequency thresholds (`hf_H`, `hf_W`, `df_W`). These strongly influence how strict the algorithm is in identifying consistent home/work locations.
 
 #### 🔧 Other Parameters
+- `stops_output` (bool): If `stop`, returns stop-level data with `location_type` and one row per stop. If `change`, returns a compact DataFrame with only one row per day with home/work location changes.
 - `edit_config_default` (dict, optional): Optional dictionary to override default configuration settings for preprocessing and detection behavior.
 This can be used to fine-tune how timestamps are interpreted, what qualifies as a valid stop, and the hours considered for detecting home/work locations. (see `config.py`)
 - `verbose` (bool): If True, reports processing steps.
