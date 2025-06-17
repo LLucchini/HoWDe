@@ -46,13 +46,13 @@ def HoWDe_labelling(
 #### 📥 Input Data Parameters
 The input data should include the following columns:
 - `useruuid` (str or int): unique user identifier
-- `loc` (str or int): stop location ID (unique by useruuid) - WARNING: avoid using "-1" loc labels to identify relevant location information (following [Infostop](https://github.com/ulfaslak/infostop?tab=readme-ov-file) notation system, those stops are automatically dropped)
+- `loc` (str or int): stop location ID (unique by useruuid) - WARNING: avoid using "-1" loc labels to identify relevant location information (following [Infostop](https://github.com/ulfaslak/infostop?tab=readme-ov-file) notation system, those stops are dropped)
 - `start`(long): Unix timestamp (start of stop)
 - `end` (long): Unix timestamp (end of stop)
 - `tz_hour_start`, `tz_minute_start`(optional): If timestamps are in UTC, these are used to shift them to local time
 - `country`(optional): If not provided, a dummy "GL0B" will be added
 
-💡 Scalability Tip: This package includes heavy computations (e.g., window functions, UDFs) that can fail on larger datasets. We recommend using df.repartition("useruuid") to evenly distribute data across partitions and enable efficient parallel processing. This helps Spark avoid memory bottlenecks and makes better use of available resources.
+💡 Scalability Tip: This package involves heavy computations (e.g. window functions, UDFs). To ensure efficient parallel processing, use df.repartition("useruuid") to distribute data across partitions evenly. This reduces memory bottlenecks and improves resource utilization.
 
 #### ⚙️ Key Parameters
 - `input_data` (PySpark DataFrame, default=None): Input dataset containing all mandatory columns: useruuid, loc, start, end.
