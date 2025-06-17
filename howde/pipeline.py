@@ -175,7 +175,9 @@ def HoWDe_labelling(
     )
 
     # 5. Pre-process stops
-    df_stops = pre_process_stops(input_data, config).cache()
+    df_stops = pre_process_stops(input_data, config)
+    df_stops = df_stops.cache()
+    
     if verbose:
         print("[HowDe] Stops pre-processed")
 
