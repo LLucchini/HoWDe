@@ -220,7 +220,7 @@ def HoWDe_labelling(
         output.append({"configs": config_, "res": df_labeled})
 
     if verbose:
-        print("[HoWDe] Computations completed")
+        print("[HoWDe] All computations registered (lazy)")
 
     if len(output) == 1:
         return output[0]["res"]
