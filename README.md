@@ -119,7 +119,7 @@ labeled_data = HoWDe_labelling(
 labeled_data.show()
 ```
 
-See more examples at `[tutorials](https://github.com/LLucchini/HoWDe/tree/main/tutorials)`
+See more examples at [`/tutorials`](https://github.com/LLucchini/HoWDe/tree/main/tutorials)
 
 
 
