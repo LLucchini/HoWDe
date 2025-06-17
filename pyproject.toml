@@ -31,3 +31,4 @@ classifiers = [
 Homepage = "https://github.com/LLucchini/HoWDe"
 Repository = "https://github.com/LLucchini/HoWDe"
 Documentation = "https://github.com/LLucchini/HoWDe/blob/main/README.md"
+Tutorials = "https://github.com/LLucchini/HoWDe/tree/main/tutorials"
