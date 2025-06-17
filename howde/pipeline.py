@@ -66,25 +66,69 @@ def HoWDe_labelling(
 ):
     """
     Run the full HoWDe labelling pipeline over one or multiple parameter configurations.
-
+    
+    This function detects home and work locations based on patterns in stop data.
+    Users can specify a single parameter configuration or provide lists of values to 
+    run multiple configurations in parallel.
+    
     Parameters
     ----------
     input_data : pyspark.sql.DataFrame
-        Raw stop data.
+        Input dataset containing stop information with the following columns:
+            - useruuid (str or int): unique user identifier
+            - loc (str or int): stop location ID (unique by useruuid). Avoid using "-1" as location labels, as these will be dropped.
+            - start (long): Unix timestamp indicating the start of the stop
+            - end (long): Unix timestamp indicating the end of the stop
+            - tz_hour_start, tz_minute_start (optional): timezone offsets for local time
+            - country (optional): country code; if not provided, 'GL0B' will be used
+            
     edit_config_default : dict, optional
-        Overrides to default configuration.
-    output_format : str
-        "stop" or "change" to determine the output format.
-    verbose : bool
-        Print status info.
+        Dictionary to override default preprocessing and detection configurations 
+        (e.g., stop duration thresholds, valid hours for home/work detection).
+
+    range_window_home : float or list, default=28
+        Size of the sliding window (in days) used to detect home locations. Can be a list to test multiple values.
+
+    range_window_work : float or list, default=42
+        Size of the sliding window (in days) used to detect work locations. Can be a list.
+
+    dhn : float or list, default=3
+        Minimum number of night-/work-hour bins required in a day for that day to be considered valid.
+
+    dn_H : float or list, default=0.7
+        Maximum fraction of missing days allowed in the home detection window.
+
+    dn_W : float or list, default=0.5
+        Maximum fraction of missing days allowed in the work detection window.
+
+    hf_H : float or list, default=0.7
+        Minimum average fraction of night-hour bins per day for a location to qualify as ‘Home’.
+
+    hf_W : float or list, default=0.4
+        Minimum average fraction of work-hour bins per day for a location to qualify as ‘Work’.
+
+    df_W : float or list, default=0.6
+        Minimum fraction of days within the work detection window that a location must be visited to qualify as ‘Work’.
+
+    output_format : str, default="stop"
+        Format of the output:
+            - "stop": stop-level data with inferred home/work labels
+            - "change": compact format with one row per day per user, indicating changes in home/work locations
+
+    verbose : bool, default=False
+        If True, prints processing status and configuration details.
 
     Returns
     -------
     pyspark.sql.DataFrame or list of dict
-        If only one configuration is used, returns a PySpark DataFrame directly.
-        If multiple configurations are tested, returns a list of dicts with:
+        If a single configuration is specified, returns a PySpark DataFrame with labeled stops.
+        If multiple configurations are explored, returns a list of dicts:
             - 'configs': the parameter settings used
-            - 'res': the resulting labeled DataFrame
+            - 'res': the resulting labeled DataFrame for each configuration
+
+    Notes
+    -----
+    (*) Parameters that accept a list will trigger multiple detection runs, one per configuration.
 
     """
 
