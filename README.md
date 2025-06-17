@@ -43,7 +43,7 @@ def HoWDe_labelling(
     """
 ```
 
-#### 📥 Input Data Parameters
+### 📥 Input Data Parameters
 The input data should include the following columns:
 - `useruuid` (str or int): unique user identifier
 - `loc` (str or int): stop location ID (unique by useruuid) - WARNING: avoid using "-1" loc labels to identify relevant location information (following [Infostop](https://github.com/ulfaslak/infostop?tab=readme-ov-file) notation system, those stops are dropped)
@@ -52,9 +52,9 @@ The input data should include the following columns:
 - `tz_hour_start`, `tz_minute_start`(optional): If timestamps are in UTC, these are used to shift them to local time
 - `country`(optional): If not provided, a dummy "GL0B" will be added
 
-💡 Scalability Tip: This package involves heavy computations (e.g. window functions, UDFs). To ensure efficient parallel processing, use df.repartition("useruuid") to distribute data across partitions evenly. This reduces memory bottlenecks and improves resource utilization.
+💡 Scalability Tip: This package involves heavy computations (e.g., window functions, UDFs). To ensure efficient parallel processing, use df.repartition("useruuid") to distribute data across partitions evenly. This reduces memory bottlenecks and improves resource utilization.
 
-#### ⚙️ Key Parameters
+### ⚙️ Key Parameters
 - `input_data` (PySpark DataFrame, default=None): Input dataset containing all mandatory columns: useruuid, loc, start, end.
 - `range_window_home` (float or list): Sliding window size (in days) used to detect home locations. (*)
 - `range_window_work` (float or list): Size of the window used to detect work locations. (*)
@@ -69,22 +69,22 @@ The input data should include the following columns:
 
 💡 Tuning Recommendation: When adjusting detection parameters, start by refining the data quality constraints (`dn_H`, `dn_W`) and frequency thresholds (`hf_H`, `hf_W`, `df_W`). These strongly influence how strict the algorithm is in identifying consistent home/work locations.
 
-#### 🔧 Other Parameters
+### 🔧 Other Parameters
 - `stops_output` (bool): If `stop`, returns stop-level data with `location_type` and one row per stop. If `change`, returns a compact DataFrame with only one row per day with home/work location changes.
 - `edit_config_default` (dict, optional): Optional dictionary to override default configuration settings for preprocessing and detection behavior.
 This can be used to fine-tune how timestamps are interpreted, what qualifies as a valid stop, and the hours considered for detecting home/work locations. (see `config.py`)
 - `verbose` (bool): If True, reports processing steps.
 
 
-#### 📤 Returns
+### 📤 Returns
 
 If a single parameter configuration is used, the function returns a PySpark DataFrame with three additional columns:
-- `detect_H_loc` The location ID (`loc`) identified as Home. Assigned if the location satisfies all filtering criteria. As such, represents a day-level assessment, taking into account observations within a sliding window of t ± `range_window_home` / 2 days.
-- `detect_W_loc`  The location ID (`loc`) identified as Work. Assigned if the location satisfies all filtering criteria. As such, represents a day-level assessment, taking into account observations within a sliding window of t ± `range_window_work` / 2 days.
+- `detect_H_loc` The location ID (`loc`) identified as Home. Assigned if the location satisfies all filtering criteria. As such, it represents a day-level assessment, taking into account observations within a sliding window of t ± `range_window_home` / 2 days.
+- `detect_W_loc`  The location ID (`loc`) identified as Work. Assigned if the location satisfies all filtering criteria. As such, it represents a day-level assessment, taking into account observations within a sliding window of t ± `range_window_work` / 2 days.
 - `location_type`  Indicates the detected location type for each stop ('H' for Home, 'W' for Work, or 'O' for Other), based on matching the stop location to the inferred home/work labels.
 
 If multiple parameter configurations are provided (as lists), the function returns a list of dictionaries, each with keys:
-- `configs`: inclduing the configuration used
+- `configs`: including the configuration used
 - `res`: including the resulting labeled PySpark DataFrame (as described above)
 
 
