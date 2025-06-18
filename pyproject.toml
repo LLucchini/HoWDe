@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "HoWDe"
-version = "1.0.0"
+version = "1.1rc3"
 description = "A package for detecting home and work locations from timestamped stop locations."
 authors = [
     { name = "Lorenzo Lucchini", email = "lorenzo.f.lucchini.work@gmail.com" },
@@ -31,3 +31,4 @@ classifiers = [
 Homepage = "https://github.com/LLucchini/HoWDe"
 Repository = "https://github.com/LLucchini/HoWDe"
 Documentation = "https://github.com/LLucchini/HoWDe/blob/main/README.md"
+Tutorials = "https://github.com/LLucchini/HoWDe/tree/main/tutorials"
