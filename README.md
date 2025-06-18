@@ -69,9 +69,9 @@ All parameters listed above can also be provided as lists to explore multiple co
 💡 Tuning Recommendation: When adjusting detection parameters, start by refining the data quality constraints (`dn_H`, `dn_W`) and frequency thresholds (`hf_H`, `hf_W`, `df_W`). These strongly influence how strict the algorithm is in identifying consistent home/work locations.
 
 ### 🔧 Other Parameters
-- `stops_output` (bool): If `stop`, returns stop-level data with `location_type` and one row per stop. If `change`, returns a compact DataFrame with only one row per day with home/work location changes.
 - `edit_config_default` (dict, optional): Optional dictionary to override default configuration settings for preprocessing and detection behavior.
 This can be used to fine-tune how timestamps are interpreted, what qualifies as a valid stop, and the hours considered for detecting home/work locations. (see `config.py`)
+- `stops_output` (bool): If `stop`, returns stop-level data with `location_type` and one row per stop. If `change`, returns a compact DataFrame with only one row per day with home/work location changes.
 - `verbose` (bool): If True, reports processing steps.
 
 
