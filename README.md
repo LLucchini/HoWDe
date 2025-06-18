@@ -43,8 +43,8 @@ def HoWDe_labelling(
     """
 ```
 
-### 📥 Input Data Parameters
-The input data should include the following columns:
+### 📥 Input Data
+The `input_data` must be a PySpark DataFrame including columns:
 - `useruuid` (str or int): unique user identifier
 - `loc` (str or int): stop location ID (unique by useruuid) - WARNING: avoid using "-1" loc labels to identify relevant location information (following [Infostop](https://github.com/ulfaslak/infostop?tab=readme-ov-file) notation system, those stops are dropped)
 - `start`(long): Unix timestamp (start of stop)
@@ -55,7 +55,6 @@ The input data should include the following columns:
 💡 Scalability Tip: This package involves heavy computations (e.g., window functions, UDFs). To ensure efficient parallel processing, use df.repartition("useruuid") to distribute data across partitions evenly. This reduces memory bottlenecks and improves resource utilization.
 
 ### ⚙️ Key Parameters
-- `input_data` (PySpark DataFrame, default=None): Input dataset containing all mandatory columns: useruuid, loc, start, end.
 - `range_window_home` (float or list): Sliding window size (in days) used to detect home locations. (*)
 - `range_window_work` (float or list): Size of the window used to detect work locations. (*)
 - `dhn` (float or list): Minimum number of night-/work-hour bins with data required in a day. (*)
