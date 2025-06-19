@@ -70,7 +70,7 @@ All parameters listed above can also be provided as lists to explore multiple co
 
 ### 🔧 Other Parameters
 - `edit_config_default` (dict, optional): Optional dictionary to override default configuration settings for preprocessing and detection behavior.
-This can be used to fine-tune how timestamps are interpreted (UTC or local time), what qualifies as a valid stop, and the hours considered for detecting home/work locations. (see `config.py`)
+This can be used to fine-tune how timestamps are interpreted (UTC or local time), what qualifies as a valid stop, and the hours considered for detecting home/work locations (see details in `config.py`)
 - `stops_output` (bool): If `stop`, returns stop-level data with `location_type` and one row per stop. If `change`, returns a compact DataFrame with only one row per day with home/work location changes.
 - `verbose` (bool): If True, reports processing steps.
 
