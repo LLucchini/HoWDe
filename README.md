@@ -2,7 +2,7 @@
 
 **HoWDe** (Home and Work Detection) is a Python package designed to identify home and work locations from individual timestamped sequences of stop locations. It processes stop location data to label each location as 'Home', 'Work', or 'None' based on user-defined parameters and heuristics.
 
-The algorithm described in our [pre-print](https://arxiv.org/abs/2506.20679v1)
+A complete description of the algorithm can be found in our [pre-print](https://arxiv.org/abs/2506.20679v1)
 <!-- Add reference to paper -->
 
 ## Features
