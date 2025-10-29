@@ -62,13 +62,28 @@ def HoWDe_labelling(
 ```
 
 ### 📥 Input Data
-The `input_data` must be a PySpark DataFrame including columns:
-- `useruuid` (str or int): unique user identifier
-- `loc` (str or int): stop location ID (unique by useruuid) - WARNING: avoid using "-1" loc labels to identify relevant location information (following [Infostop](https://github.com/ulfaslak/infostop?tab=readme-ov-file) notation system, those stops are dropped)
-- `start`(long): Unix timestamp (start of stop)
-- `end` (long): Unix timestamp (end of stop)
-- `tz_hour_start`, `tz_minute_start`(optional): If timestamps are in UTC, these are used to shift them to local time
-- `country`(optional): If not provided, a dummy "GL0B" will be added
+
+HoWDe expects the input to be a **PySpark DataFrame** containing one row per user stop, with the following columns:
+
+| Column | Type | Description |
+|:--|:--|:--|
+| `useruuid` | *str* or *int* | Unique user identifier. |
+| `loc` | *str* or *int* | Stop location ID (unique per `useruuid`). <br> ⚠️ Avoid using `-1` to label meaningful stops, as these are dropped following the [Infostop](https://github.com/ulfaslak/infostop?tab=readme-ov-file) convention. |
+| `start` | *long* | Start time of the stop (Unix timestamp). |
+| `end` | *long* | End time of the stop (Unix timestamp). |
+| `tz_hour_start`, `tz_minute_start` | *int* | Optional. Time zone offsets (hours and minutes) used to convert UTC timestamps to local time, if applicable. |
+| `country` | *int* | Optional. Country code; if not provided, a default `"GL0B"` label is assigned. |
+
+#### Example
+
+```python
++---------+-----+-------------+-------------+---------------+----------------+---------+
+| useruuid| loc | start       | end         | tz_hour_start | tz_minute_start| country |
++---------+-----+-------------+-------------+---------------+----------------+---------+
+| 1001    |  1 | 1704031200  | 1704034800  | 1             | 0              | DK      |
+| 1001    |  2 | 1704056400  | 1704060000  | 1             | 0              | DK      |
++---------+-----+-------------+-------------+---------------+----------------+---------+
+```
 
 💡 Scalability Tip: This package involves heavy computations (e.g., window functions, UDFs). To ensure efficient parallel processing, use df.repartition("useruuid") to distribute data across partitions evenly. This reduces memory bottlenecks and improves resource utilization.
 
