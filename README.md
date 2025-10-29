@@ -87,8 +87,15 @@ All parameters listed above can also be provided as lists to explore multiple co
 💡 Tuning Recommendation: When adjusting detection parameters, start by refining the data quality constraints (`dn_H`, `dn_W`) and frequency thresholds (`hf_H`, `hf_W`, `df_W`). These strongly influence how strict the algorithm is in identifying consistent home/work locations.
 
 ### 🔧 Other Parameters
-- `edit_config_default` (dict, optional): Optional dictionary to override default configuration settings for preprocessing and detection behavior.
-This can be used to fine-tune how timestamps are interpreted (UTC or local time), what qualifies as a valid stop, and the hours considered for detecting home/work locations (see details in `config.py`)
+- `edit_config_default` (dict, optional):
+Optional dictionary that allows overriding the default settings in [`howde/config.py`](howde/config.py) to fine-tune preprocessing and detection behavior.  
+The dictionary should include parameters:
+  - **`is_time_local`** — interpret timestamps as local time (`True`) or UTC (`False`)  
+  - **`min_stop_t`** — minimum stop duration (seconds)  
+  - **`start_hour_day`, `end_hour_day`** — hours used for *home* detection  
+  - **`start_hour_work`, `end_hour_work`** — hours used for *work* detection  
+  - **`data_for_predict`** — use only past data for estimation  
+
 - `stops_output` (bool): If `stop`, returns stop-level data with `location_type` and one row per stop. If `change`, returns a compact DataFrame with only one row per day with home/work location changes.
 - `verbose` (bool): If True, reports processing steps.
 
