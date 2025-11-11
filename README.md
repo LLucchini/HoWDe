@@ -85,6 +85,7 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 💡 Scalability Tip: This package involves heavy computations (e.g., window functions, UDFs). To ensure efficient parallel processing, use df.repartition("useruuid") to distribute data across partitions evenly. This reduces memory bottlenecks and improves resource utilization.
 
 ### ⚙️ Key Parameters
+<!-- 
 - `range_window_home` (float or list): Sliding window size (in days) used to detect home locations.
 - `range_window_work` (float or list): Size of the window used to detect work locations. 
 - `dhn` (float or list): Minimum number of night-/work-hour bins with data required in a day. 
@@ -93,10 +94,26 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 - `hf_H` (float or list): Minimum average fraction of night-hour bins (across days in the window) required for a location to qualify as ‘Home’. 
 - `hf_W` (float or list): Minimum average fraction of work-hour bins (across days in the window) required for a location to qualify as ‘Work’. 
 - `df_W` (float or list): Minimum fraction of days within the window a location must be visited to qualify as ‘Work’. 
+-->
+
+| Parameter | Type | Description |
+|:--|:--|:--|
+| `range_window_home` | *float* or *list* | Sliding window size (in days) used to detect home locations. |
+| `range_window_work` | *float* or *list* | Sliding window size (in days) used to detect work locations. |
+| `dhn` | *float* or *list* | Minimum number of night-/work-hour bins with data required per day. |
+| `dn_H` | *float* or *list* | Maximum fraction of missing days allowed within the window for a home location to be detected. |
+| `dn_W` | *float* or *list* | Maximum fraction of missing days allowed within the window for a work location to be detected. |
+| `hf_H` | *float* or *list* | Minimum average fraction of night-hour bins (across days in the window) required for a location to qualify as *Home*. |
+| `hf_W` | *float* or *list* | Minimum average fraction of work-hour bins (across days in the window) required for a location to qualify as *Work*. |
+| `df_W` | *float* or *list* | Minimum fraction of days within the window a location must be visited to qualify as *Work*. |
+
 
 All parameters listed above can also be provided as lists to explore multiple configurations in a single run.
 
-💡 Tuning Recommendation: When adjusting detection parameters, start by refining the data quality constraints (`dn_H`, `dn_W`) and frequency thresholds (`hf_H`, `hf_W`, `df_W`). These strongly influence how strict the algorithm is in identifying consistent home/work locations.
+💡 **Tuning Tips**
+When adjusting detection parameters, start by refining the data quality constraints (`dn_H`, `dn_W`) and frequency thresholds (`hf_H`, `hf_W`, `df_W`). These strongly influence how strict the algorithm is in identifying consistent home/work locations.
+<!-- Suggested parameter ranges to explore  -->
+
 
 ### 🔧 Other Parameters
 - `edit_config_default` (dict, optional):
