@@ -81,7 +81,7 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 +---------+-----+-------------+-------------+---------------+----------------+---------+
 ```
 
-💡 Scalability Tip: This package involves heavy computations (e.g., window functions, UDFs). To ensure efficient parallel processing, use df.repartition("useruuid") to distribute data across partitions evenly. This reduces memory bottlenecks and improves resource utilization.
+💡 **Scalability Tip**: This package involves heavy computations (e.g., window functions, UDFs). To ensure efficient parallel processing, use df.repartition("useruuid") to distribute data across partitions evenly. This reduces memory bottlenecks and improves resource utilization.
 
 ### ⚙️ Key Parameters
 <!-- 
