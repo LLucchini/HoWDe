@@ -97,8 +97,8 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 
 | Parameter | Type | Description | Suggested value and range |
 |:--|:--|:--|:--|
-| `range_window_home` | *float* or *list* | Sliding window size (in days) used to detect home locations. | 28 [14-112] |
-| `range_window_work` | *float* or *list* | Sliding window size (in days) used to detect work locations. | 42 [14-112] |
+| `range_window_home` | *int* or *list* | Sliding window size (in days) used to detect home locations. | 28 [14-112] |
+| `range_window_work` | *int* or *list* | Sliding window size (in days) used to detect work locations. | 42 [14-112] |
 | `C_hours` | *float* or *list* | Minimum fraction of night/business hourly-bins with data in a day | 0.4 [0.2-0.9]|
 | `dn_H` | *float* or *list* | Maximum fraction of missing days allowed within the window for a home location to be detected. | 0.7 [0.5-0.9]|
 | `dn_W` | *float* or *list* | Maximum fraction of missing days allowed within the window for a work location to be detected. | 0.5 [0.4-0.6]|

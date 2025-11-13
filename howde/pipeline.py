@@ -182,15 +182,15 @@ def HoWDe_labelling(
     # 5. Validate parameters thresholds
     minmax_config = thresholds_config()
     for param_name, param_list in {
+        "range_window_home": range_window_home,
+        "range_window_work": range_window_work,
         "C_hours": C_hours,
         "dn_H": dn_H,
         "dn_W": dn_W,
-        "range_window_home": range_window_home,
-        "range_window_work": range_window_work,
         "f_hours_H": f_hours_H,
         "f_hours_W": f_hours_W,
         "f_days_W": f_days_W,
-    }:
+    }.items():
         for param_value in param_list:
             min_val, max_val = minmax_config[param_name]
             if not (min_val <= param_value <= max_val):
@@ -198,6 +198,12 @@ def HoWDe_labelling(
                     f"Parameter {param_name} has invalid value {param_value}. "
                     f"Must be in range [{min_val}, {max_val}]."
                 )
+
+            if param_name in ("range_window_home", "range_window_work"):
+                if isinstance(param_value, float) and not param_value.is_integer():
+                    raise TypeError(
+                        f"Parameter {param_name} must be an integer, but got {type(param_value).__name__}."
+                    )
 
     # 6. Pre-process stops
     df_stops = pre_process_stops(input_data, config)

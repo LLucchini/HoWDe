@@ -503,9 +503,12 @@ def find_home(df_th, config):
 
     config : dict
         Configuration dictionary with:
-            - range_window_home : int, size of sliding window (in days)
-            - start_hour_day / end_hour_day : int, defines "home hours"
-            - data_for_predict : bool, if True only uses past data in the window
+            range_window_home : int or list
+                Sliding window size (in days) used to detect home locations
+            start_hour_day / end_hour_day: int
+                Start and End of day hours interval
+            data_for_predict : bool,
+                If True, uses past-only data in sliding windows
             C_hours : float
                 Minimum fraction of night hourly-bins with data in a day
             - dn_H : float, max fraction of nulls in the window
@@ -617,9 +620,12 @@ def find_work(df_tH, config):
 
     config : dict
         Configuration with the following keys:
-            - range_window_work : int, size of sliding window
-            - start_hour_work / end_hour_work : int, define work hours
-            - data_for_predict : bool, use past-only or symmetric window
+            range_window_work : int or list
+                Sliding window size (in days) used to detect work locations
+            start_hour_work / end_hour_work : int
+                Start and End of work hours interval
+            data_for_predict : bool,
+                use past-only or symmetric window
             C_hours : float
                 Minimum fraction of business hourly-bins with data in a day
             - dn_W : float, max missing days in window
