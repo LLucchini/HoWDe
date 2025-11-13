@@ -43,9 +43,9 @@ def HoWDe_labelling(
     edit_config_default=None,
     range_window_home=28,
     range_window_work=42,
-    C_hours=3,
-    dn_H=0.7,
-    dn_W=0.5,
+    C_hours=0.4,
+    C_days_H=0.4,
+    C_days_W=0.5,
     f_hours_H=0.7,
     f_hours_W=0.4,
     f_days_W=0.6,
@@ -100,8 +100,8 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 | `range_window_home` | *int* or *list* | Sliding window size (in days) used to detect home locations. | 28 [14-112] |
 | `range_window_work` | *int* or *list* | Sliding window size (in days) used to detect work locations. | 42 [14-112] |
 | `C_hours` | *float* or *list* | Minimum fraction of night/business hourly-bins with data in a day | 0.4 [0.2-0.9]|
-| `dn_H` | *float* or *list* | Maximum fraction of missing days allowed within the window for a home location to be detected. | 0.7 [0.5-0.9]|
-| `dn_W` | *float* or *list* | Maximum fraction of missing days allowed within the window for a work location to be detected. | 0.5 [0.4-0.6]|
+| `C_days_H` | *float* or *list* | Minimum fraction of days with data in a window | 0.4 [0.1-0.6]|
+| `C_days_W` | *float* or *list* | Minimum fraction of days with data in a window | 0.5 [0.4-0.6]|
 | `f_hours_H` | *float* or *list* | Minimum average fraction of night hourly-bins (across days in the window) required for a location to qualify as *Home*. | 0.7 [0.5-0.9] |
 | `f_hours_W` | *float* or *list* | Minimum average fraction of business hourly-bins (across days in the window) required for a location to qualify as *Work*. |  0.4 [0.4-0.6] |
 | `f_days_W` | *float* or *list* | Minimum fraction of days within the window a location should be visited to qualify as *Work*. | 0.6 [0.5-0.8] |
@@ -111,9 +111,10 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 All parameters listed above can also be provided as lists to explore multiple configurations in a single run.
 
 💡 **Tuning Tip:** 
-When adjusting detection parameters, start by refining the temporal coverage filters `dn_H`, `dn_W` to match the characteristics of your data. 
+When adjusting detection parameters, start by refining the temporal coverage filters `C_days_H`, `C_days_W` to match the characteristics of your data. 
 Once these are well aligned, tune the estimation thresholds `f_hours_H`, `f_hours_W`, `f_days_W` based on the case of study according to the specifics of your case study. These estimation thresholds play a major role in determining how strictly the algorithm identifies consistent home and work locations.
-<!-- Suggested parameter ranges to explore  -->
+
+While we provide recommended parameter ranges to guide your exploration, the hard-coded limits in [`howde/config.py`](howde/config.py) are intentionally more relaxed—they simply prevent non-sensical values. Inputs falling outside these hard limits will raise an error.
 
 
 ### 🔧 Other Parameters
@@ -159,9 +160,9 @@ labeled_data = HoWDe_labelling(
     input_data,
     range_window_home=28,
     range_window_work=42,
-    C_hours=3,
-    dn_H=0.7,
-    dn_W=0.5,
+    C_hours=0.4,
+    C_days_H=0.4,
+    C_days_W=0.5,
     f_hours_H=0.7,
     f_hours_W=0.4,
     f_days_W=0.6,

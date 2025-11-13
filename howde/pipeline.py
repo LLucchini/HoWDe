@@ -61,8 +61,8 @@ def HoWDe_labelling(
     range_window_home=28,
     range_window_work=42,
     C_hours=0.4,
-    dn_H=0.7,
-    dn_W=0.5,
+    C_days_H=0.4,
+    C_days_W=0.5,
     f_hours_H=0.7,
     f_hours_W=0.4,
     f_days_W=0.6,
@@ -100,11 +100,11 @@ def HoWDe_labelling(
     C_hours : float or list, default=3
         Minimum fraction of night/business hourly-bins with data in a day to be considered valid.
 
-    dn_H : float or list, default=0.7
-        Maximum fraction of missing days allowed in the home detection window.
+    C_days_H : float or list, default=0.3
+        Minimum fraction of days with data in the home detection window.
 
-    dn_W : float or list, default=0.5
-        Maximum fraction of missing days allowed in the work detection window.
+    C_days_W : float or list, default=0.5
+        Minimum fraction of days with data in the work detection window.
 
     f_hours_H : float or list, default=0.7
         Minimum average fraction of night hourly-bins a location should be visited to be considered for home location detection.
@@ -159,8 +159,8 @@ def HoWDe_labelling(
     # 4. Convert parameters to lists
     (
         C_hours,
-        dn_H,
-        dn_W,
+        C_days_H,
+        C_days_W,
         range_window_home,
         range_window_work,
         f_hours_H,
@@ -169,8 +169,8 @@ def HoWDe_labelling(
     ) = check_and_convert(
         [
             C_hours,
-            dn_H,
-            dn_W,
+            C_days_H,
+            C_days_W,
             range_window_home,
             range_window_work,
             f_hours_H,
@@ -185,8 +185,8 @@ def HoWDe_labelling(
         "range_window_home": range_window_home,
         "range_window_work": range_window_work,
         "C_hours": C_hours,
-        "dn_H": dn_H,
-        "dn_W": dn_W,
+        "C_days_H": C_days_H,
+        "C_days_W": C_days_W,
         "f_hours_H": f_hours_H,
         "f_hours_W": f_hours_W,
         "f_days_W": f_days_W,
@@ -218,23 +218,23 @@ def HoWDe_labelling(
         range_window_home,
         range_window_work,
         C_hours,
-        dn_H,
+        C_days_H,
         f_hours_H,
-        dn_W,
+        C_days_W,
         f_hours_W,
         f_days_W,
     )
 
-    for rW_H, rW_W, noneD, noneH, fh_H, noneW, fh_W, fd_W in param_grid:
+    for rW_H, rW_W, Ch, Cd_H, fh_H, Cd_W, fh_W, fd_W in param_grid:
         config_ = config.copy()
         config_.update(
             {
                 "range_window_home": rW_H,
                 "range_window_work": rW_W,
-                "C_hours": F.lit(noneD),
-                "dn_H": F.lit(noneH),
+                "C_hours": F.lit(Ch),
+                "C_days_H": F.lit(Cd_H),
                 "f_hours_H": F.lit(fh_H),
-                "dn_W": F.lit(noneW),
+                "C_days_W": F.lit(Cd_W),
                 "f_hours_W": F.lit(fh_W),
                 "f_days_W": F.lit(fd_W),
             }
@@ -243,8 +243,8 @@ def HoWDe_labelling(
         if verbose:
             print(
                 f"[HoWDe] Running config: "
-                f"rw_H={rW_H}, rw_W={rW_W}, dn_H={noneH}, f_hours_H={fh_H}, "
-                f"dn_W={noneW}, f_hours_W={fh_W}, f_days_W={fd_W}"
+                f"rw_H={rW_H}, rw_W={rW_W}, C_hours={Ch}, C_days_H={Cd_H}, C_days_W={Cd_W}, "
+                f"f_hours_H={fh_H}, f_hours_W={fh_W}, f_days_W={fd_W}"
             )
 
         df_labeled = HoWDe_compute(df_stops, config_, output_format=output_format)
