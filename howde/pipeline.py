@@ -60,7 +60,7 @@ def HoWDe_labelling(
     edit_config_default=None,
     range_window_home=28,
     range_window_work=42,
-    dhn=3,
+    C_hours=0.4,
     dn_H=0.7,
     dn_W=0.5,
     f_hours_H=0.7,
@@ -97,8 +97,8 @@ def HoWDe_labelling(
     range_window_work : float or list, default=42
         Size of the sliding window (in days) used to detect work locations. Can be a list.
 
-    dhn : float or list, default=3
-        Minimum number of night-/work-hour bins required in a day for that day to be considered valid.
+    C_hours : float or list, default=3
+        Minimum fraction of night/business hourly-bins with data in a day to be considered valid.
 
     dn_H : float or list, default=0.7
         Maximum fraction of missing days allowed in the home detection window.
@@ -158,7 +158,7 @@ def HoWDe_labelling(
 
     # 4. Convert parameters to lists
     (
-        dhn,
+        C_hours,
         dn_H,
         dn_W,
         range_window_home,
@@ -168,7 +168,7 @@ def HoWDe_labelling(
         f_days_W,
     ) = check_and_convert(
         [
-            dhn,
+            C_hours,
             dn_H,
             dn_W,
             range_window_home,
@@ -182,7 +182,7 @@ def HoWDe_labelling(
     # 5. Validate parameters thresholds
     minmax_config = thresholds_config()
     for param_name, param_list in {
-        "dhn": dhn,
+        "C_hours": C_hours,
         "dn_H": dn_H,
         "dn_W": dn_W,
         "range_window_home": range_window_home,
@@ -211,7 +211,7 @@ def HoWDe_labelling(
     param_grid = itertools.product(
         range_window_home,
         range_window_work,
-        dhn,
+        C_hours,
         dn_H,
         f_hours_H,
         dn_W,
@@ -225,7 +225,7 @@ def HoWDe_labelling(
             {
                 "range_window_home": rW_H,
                 "range_window_work": rW_W,
-                "dhn": F.lit(noneD),
+                "C_hours": F.lit(noneD),
                 "dn_H": F.lit(noneH),
                 "f_hours_H": F.lit(fh_H),
                 "dn_W": F.lit(noneW),

@@ -43,7 +43,7 @@ def HoWDe_labelling(
     edit_config_default=None,
     range_window_home=28,
     range_window_work=42,
-    dhn=3,
+    C_hours=3,
     dn_H=0.7,
     dn_W=0.5,
     f_hours_H=0.7,
@@ -87,7 +87,7 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 <!-- 
 - `range_window_home` (float or list): Sliding window size (in days) used to detect home locations.
 - `range_window_work` (float or list): Size of the window used to detect work locations. 
-- `dhn` (float or list): Minimum number of night-/work-hour bins with data required in a day. 
+- `C_hours` (float or list): Minimum number of night-/work-hour bins with data required in a day. 
 - `dn_H` (float or list):  Maximum fraction of missing days allowed within the window for a home location to be detected on a given day. 
 - `dn_W` (float or list):  Maximum fraction of missing days allowed within the window for a work location to be detected on a given day. 
 - `hf_H` (float or list): Minimum average fraction of night-hour bins (across days in the window) required for a location to qualify as ‘Home’. 
@@ -99,7 +99,7 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 |:--|:--|:--|:--|
 | `range_window_home` | *float* or *list* | Sliding window size (in days) used to detect home locations. | 28 [14-112] |
 | `range_window_work` | *float* or *list* | Sliding window size (in days) used to detect work locations. | 42 [14-112] |
-| `dhn` | *float* or *list* | Minimum number of night-/work-hour bins with data required per day. | 3 [3-6]|
+| `C_hours` | *float* or *list* | Minimum fraction of night/business hourly-bins with data in a day | 0.4 [0.2-0.9]|
 | `dn_H` | *float* or *list* | Maximum fraction of missing days allowed within the window for a home location to be detected. | 0.7 [0.5-0.9]|
 | `dn_W` | *float* or *list* | Maximum fraction of missing days allowed within the window for a work location to be detected. | 0.5 [0.4-0.6]|
 | `f_hours_H` | *float* or *list* | Minimum average fraction of night hourly-bins (across days in the window) required for a location to qualify as *Home*. | 0.7 [0.5-0.9] |
@@ -159,7 +159,7 @@ labeled_data = HoWDe_labelling(
     input_data,
     range_window_home=28,
     range_window_work=42,
-    dhn=3,
+    C_hours=3,
     dn_H=0.7,
     dn_W=0.5,
     f_hours_H=0.7,

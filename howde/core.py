@@ -335,18 +335,18 @@ def cnt_hours_none(*v):
 
 
 @F.udf(MapType(StringType(), FloatType()))
-def dict_loc_frac_daily(dic_f, nan_cnt, bnd_nan, hour_range):
+def dict_loc_frac_daily(dic_f, nan_cnt, C_hours, hour_range):
     """
     For a day, compute the fraction of time spent at each location,
     normalized by the number of hours with data.
 
-    Returns None if there are too many missing hours (based on bnd_nan).
+    Returns None if there are too many missing hours (based on hour coverage C_hours).
     """
     if dic_f is None:
         return None
     if nan_cnt is None:
         nan_cnt = 0
-    if hour_range - nan_cnt >= bnd_nan:
+    if (hour_range - nan_cnt) / hour_range >= C_hours:
         return {k: round(v / (hour_range - nan_cnt), 3) for k, v in dic_f.items()}
     else:
         return None
@@ -506,7 +506,8 @@ def find_home(df_th, config):
             - range_window_home : int, size of sliding window (in days)
             - start_hour_day / end_hour_day : int, defines "home hours"
             - data_for_predict : bool, if True only uses past data in the window
-            - dhn : float, max number of missing hours per day
+            C_hours : float
+                Minimum fraction of night hourly-bins with data in a day
             - dn_H : float, max fraction of nulls in the window
             f_hours_H : float or list
                 Minimum average fraction of night hourly-bins a location should be visited to be considered for home location detection.
@@ -522,7 +523,7 @@ def find_home(df_th, config):
     start_hour_day = config["start_hour_day"]
     end_hour_day = config["end_hour_day"]
     data_for_predict = config["data_for_predict"]
-    bnd_nan = config["dhn"]
+    C_hours = config["C_hours"]
     bnd_none = config["dn_H"]
     f_hours_H = config["f_hours_H"]
 
@@ -555,7 +556,7 @@ def find_home(df_th, config):
         .withColumn("NaNct", cnt_hours_none(*home_range))
         .withColumn(
             "ResPot_dicD",
-            dict_loc_frac_daily(F.col("dicDct"), F.col("NaNct"), bnd_nan, tot_hours),
+            dict_loc_frac_daily(F.col("dicDct"), F.col("NaNct"), C_hours, tot_hours),
         )
         .withColumn(
             "NnFlag",
@@ -619,7 +620,8 @@ def find_work(df_tH, config):
             - range_window_work : int, size of sliding window
             - start_hour_work / end_hour_work : int, define work hours
             - data_for_predict : bool, use past-only or symmetric window
-            - dhn : float, max missing hours per day
+            C_hours : float
+                Minimum fraction of business hourly-bins with data in a day
             - dn_W : float, max missing days in window
             f_hours_W : float or list
                 Minium average fraction of business hourly-bins a location should be visited to be considered for work location detection.
@@ -636,7 +638,7 @@ def find_work(df_tH, config):
     start_hour_work = config["start_hour_work"]
     end_hour_work = config["end_hour_work"]
     data_for_predict = config["data_for_predict"]
-    bnd_nan = config["dhn"]
+    C_hours = config["C_hours"]
     bnd_none = config["dn_W"]
     f_hours_W = config["f_hours_W"]
     f_days_W = config["f_days_W"]
@@ -676,7 +678,7 @@ def find_work(df_tH, config):
             F.when(
                 F.col("s_weekend") == False,
                 dict_loc_frac_daily(
-                    F.col("dicDct"), F.col("NaNct"), bnd_nan, tot_hours
+                    F.col("dicDct"), F.col("NaNct"), C_hours, tot_hours
                 ),
             ).otherwise(None),
         )

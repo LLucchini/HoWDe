@@ -12,7 +12,7 @@ def default_config():
 
 def thresholds_config():
     return {
-        "dhn": [0.1, 1],
+        "C_hours": [0.1, 1],
         "dn_H": [0, 1],
         "dn_W": [0, 1],
         "range_window_home": [1, 365],
