@@ -373,13 +373,13 @@ def sw_combdic_frac_daily_F(L, Nn, bnd_none):
 
 
 @F.udf(MapType(StringType(), FloatType()))
-def sw_reddic(d_sw, bnd_freq):
+def sw_reddic(d_sw, f_hd):
     """
-    Remove locations with frequency below `bnd_freq`.
+    Remove locations with frequency below `f_hd`.
     Returns a filtered dictionary or None.
     """
     try:
-        dic = {k: v for k, v in d_sw.items() if v >= bnd_freq}
+        dic = {k: v for k, v in d_sw.items() if v >= f_hd}
         return dic if dic else None
     except:
         return None
@@ -508,7 +508,8 @@ def find_home(df_th, config):
             - data_for_predict : bool, if True only uses past data in the window
             - dhn : float, max number of missing hours per day
             - dn_H : float, max fraction of nulls in the window
-            - bnd_freq_home : float, min average frequency to be considered home
+            f_hours_H : float or list
+                Minimum average fraction of night hourly-bins a location should be visited to be considered for home location detection.
 
     Returns
     -------
@@ -523,7 +524,7 @@ def find_home(df_th, config):
     data_for_predict = config["data_for_predict"]
     bnd_nan = config["dhn"]
     bnd_none = config["dn_H"]
-    bnd_freq = config["hf_H"]
+    f_hours_H = config["f_hours_H"]
 
     # Define sliding window range
     w_u = Window.partitionBy("useruuid")
@@ -568,7 +569,7 @@ def find_home(df_th, config):
                 bnd_none,
             ),
         )
-        .withColumn("ResAgg_dicredSW", sw_reddic(F.col("ResAgg_dicSW"), bnd_freq))
+        .withColumn("ResAgg_dicredSW", sw_reddic(F.col("ResAgg_dicSW"), f_hours_H))
         .withColumn("HomPot_loc", sw_top_loc(F.col("ResAgg_dicredSW")))
     )
 
@@ -620,8 +621,10 @@ def find_work(df_tH, config):
             - data_for_predict : bool, use past-only or symmetric window
             - dhn : float, max missing hours per day
             - dn_W : float, max missing days in window
-            - hf_W : float, min avg hourly fraction
-            - df_W : float, min ratio of days for routine presence
+            f_hours_W : float or list
+                Minium average fraction of business hourly-bins a location should be visited to be considered for work location detection.
+            f_days_W : float or list, default=0.6
+                Minimum fraction of days a location should be visited within the window to be considered for work location detection.
 
     Returns
     -------
@@ -635,8 +638,8 @@ def find_work(df_tH, config):
     data_for_predict = config["data_for_predict"]
     bnd_nan = config["dhn"]
     bnd_none = config["dn_W"]
-    bnd_freq_h = config["hf_W"]
-    bnd_freq_dVis = config["df_W"]
+    f_hours_W = config["f_hours_W"]
+    f_days_W = config["f_days_W"]
 
     # Define work hours
     work_range = [str(i) for i in range(start_hour_work, end_hour_work + 1)]
@@ -705,7 +708,7 @@ def find_work(df_tH, config):
                 bnd_none,
             ),
         )
-        .withColumn("EmpPot_dicredSW_h", sw_reddic(F.col("EmpPot_dicSW_h"), bnd_freq_h))
+        .withColumn("EmpPot_dicredSW_h", sw_reddic(F.col("EmpPot_dicSW_h"), f_hours_W))
     )
 
     # Step 2b: Sliding window on ratio of days visited
@@ -718,7 +721,7 @@ def find_work(df_tH, config):
         ),
     ).withColumn(
         "EmpPot_dicredSW_dVis",
-        sw_reddic(F.col("EmpPot_dicSW_dVis"), bnd_freq_dVis),
+        sw_reddic(F.col("EmpPot_dicSW_dVis"), f_days_W),
     )
 
     # Step 3: Pick top location prioritizing temporal regularity

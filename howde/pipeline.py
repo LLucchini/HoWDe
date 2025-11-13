@@ -58,19 +58,19 @@ def HoWDe_labelling(
     dhn=3,
     dn_H=0.7,
     dn_W=0.5,
-    hf_H=0.7,
-    hf_W=0.4,
-    df_W=0.6,
+    f_hours_H=0.7,
+    f_hours_W=0.4,
+    f_days_W=0.6,
     output_format="stop",
     verbose=False,
 ):
     """
     Run the full HoWDe labelling pipeline over one or multiple parameter configurations.
-    
+
     This function detects home and work locations based on patterns in stop data.
-    Users can specify a single parameter configuration or provide lists of values to 
+    Users can specify a single parameter configuration or provide lists of values to
     run multiple configurations in parallel.
-    
+
     Parameters
     ----------
     input_data : pyspark.sql.DataFrame
@@ -81,9 +81,9 @@ def HoWDe_labelling(
             - end (long): Unix timestamp indicating the end of the stop
             - tz_hour_start, tz_minute_start (optional): timezone offsets for local time
             - country (optional): country code; if not provided, 'GL0B' will be used
-            
+
     edit_config_default : dict, optional
-        Dictionary to override default preprocessing and detection configurations 
+        Dictionary to override default preprocessing and detection configurations
         (e.g., stop duration thresholds, valid hours for home/work detection).
 
     range_window_home : float or list, default=28
@@ -101,14 +101,14 @@ def HoWDe_labelling(
     dn_W : float or list, default=0.5
         Maximum fraction of missing days allowed in the work detection window.
 
-    hf_H : float or list, default=0.7
-        Minimum average fraction of night-hour bins per day for a location to qualify as ‘Home’.
+    f_hours_H : float or list, default=0.7
+        Minimum average fraction of night hourly-bins a location should be visited to be considered for home location detection.
 
-    hf_W : float or list, default=0.4
-        Minimum average fraction of work-hour bins per day for a location to qualify as ‘Work’.
+    f_hours_W : float or list, default=0.4
+        Minium average fraction of business hourly-bins a location should be visited to be considered for work location detection.
 
-    df_W : float or list, default=0.6
-        Minimum fraction of days within the work detection window that a location must be visited to qualify as ‘Work’.
+    f_days_W : float or list, default=0.6
+        Minimum fraction of days a location should be visited within the window to be considered for work location detection.
 
     output_format : str, default="stop"
         Format of the output:
@@ -158,9 +158,9 @@ def HoWDe_labelling(
         dn_W,
         range_window_home,
         range_window_work,
-        hf_H,
-        hf_W,
-        df_W,
+        f_hours_H,
+        f_hours_W,
+        f_days_W,
     ) = check_and_convert(
         [
             dhn,
@@ -168,16 +168,16 @@ def HoWDe_labelling(
             dn_W,
             range_window_home,
             range_window_work,
-            hf_H,
-            hf_W,
-            df_W,
+            f_hours_H,
+            f_hours_W,
+            f_days_W,
         ]
     )
 
     # 5. Pre-process stops
     df_stops = pre_process_stops(input_data, config)
     df_stops = df_stops.cache()
-    
+
     if verbose:
         print("[HowDe] Stops pre-processed")
 
@@ -188,13 +188,13 @@ def HoWDe_labelling(
         range_window_work,
         dhn,
         dn_H,
-        hf_H,
+        f_hours_H,
         dn_W,
-        hf_W,
-        df_W,
+        f_hours_W,
+        f_days_W,
     )
 
-    for rW_H, rW_W, noneD, noneH, freqH, noneW, freqWh, freqWd in param_grid:
+    for rW_H, rW_W, noneD, noneH, fh_H, noneW, fh_W, fd_W in param_grid:
         config_ = config.copy()
         config_.update(
             {
@@ -202,18 +202,18 @@ def HoWDe_labelling(
                 "range_window_work": rW_W,
                 "dhn": F.lit(noneD),
                 "dn_H": F.lit(noneH),
-                "hf_H": F.lit(freqH),
+                "f_hours_H": F.lit(fh_H),
                 "dn_W": F.lit(noneW),
-                "hf_W": F.lit(freqWh),
-                "df_W": F.lit(freqWd),
+                "f_hours_W": F.lit(fh_W),
+                "f_days_W": F.lit(fd_W),
             }
         )
 
         if verbose:
             print(
                 f"[HoWDe] Running config: "
-                f"rw_H={rW_H}, rw_W={rW_W}, dn_H={noneH}, hf_H={freqH}, "
-                f"dn_W={noneW}, hf_W={freqWh}, df_W={freqWd}"
+                f"rw_H={rW_H}, rw_W={rW_W}, dn_H={noneH}, f_hours_H={fh_H}, "
+                f"dn_W={noneW}, f_hours_W={fh_W}, f_days_W={fd_W}"
             )
 
         df_labeled = HoWDe_compute(df_stops, config_, output_format=output_format)
