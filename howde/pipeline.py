@@ -15,7 +15,12 @@ from .core import (
     pre_process_stops,
 )
 
-from .config import default_config, REQUIRED_COLUMNS, REQUIRED_COLUMNS_WITH_TZ
+from .config import (
+    default_config,
+    thresholds_config,
+    REQUIRED_COLUMNS,
+    REQUIRED_COLUMNS_WITH_TZ,
+)
 
 
 def HoWDe_compute(df_stops, config, output_format="stop"):
@@ -174,14 +179,34 @@ def HoWDe_labelling(
         ]
     )
 
-    # 5. Pre-process stops
+    # 5. Validate parameters thresholds
+    minmax_config = thresholds_config()
+    for param_name, param_list in {
+        "dhn": dhn,
+        "dn_H": dn_H,
+        "dn_W": dn_W,
+        "range_window_home": range_window_home,
+        "range_window_work": range_window_work,
+        "f_hours_H": f_hours_H,
+        "f_hours_W": f_hours_W,
+        "f_days_W": f_days_W,
+    }:
+        for param_value in param_list:
+            min_val, max_val = minmax_config[param_name]
+            if not (min_val <= param_value <= max_val):
+                raise ValueError(
+                    f"Parameter {param_name} has invalid value {param_value}. "
+                    f"Must be in range [{min_val}, {max_val}]."
+                )
+
+    # 6. Pre-process stops
     df_stops = pre_process_stops(input_data, config)
     df_stops = df_stops.cache()
 
     if verbose:
         print("[HowDe] Stops pre-processed")
 
-    # 6. Loop over parameter combinations
+    # 7. Loop over parameter combinations
     output = []
     param_grid = itertools.product(
         range_window_home,

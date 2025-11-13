@@ -10,5 +10,18 @@ def default_config():
     }
 
 
+def thresholds_config():
+    return {
+        "dhn": [0.1, 1],
+        "dn_H": [0, 1],
+        "dn_W": [0, 1],
+        "range_window_home": [1, 365],
+        "range_window_work": [1, 365],
+        "f_hours_H": [0.3, 1],
+        "f_hours_W": [0.1, 1],
+        "f_days_W": [0.1, 1],
+    }
+
+
 REQUIRED_COLUMNS = ["useruuid", "loc", "start", "end"]
 REQUIRED_COLUMNS_WITH_TZ = REQUIRED_COLUMNS + ["tz_hour_start", "tz_minute_start"]
