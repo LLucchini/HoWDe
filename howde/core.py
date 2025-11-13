@@ -518,7 +518,7 @@ def find_home(df_th, config):
                 If True, uses past-only data in sliding windows
             C_hours : float
                 Minimum fraction of night hourly-bins with data in a day
-            C_days_W : float
+            C_days_H : float
                 Minimum fraction of days with data in the window
             f_hours_H : float
                 Minimum average fraction of night hourly-bins a location should be visited to be considered for home location detection.
