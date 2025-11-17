@@ -20,10 +20,11 @@ Thank you for considering contributing to **HoWDe**! Here’s how you can help:
    ```
    
 5.	Open a Pull Request on GitHub.
-   Code Style
+
+6.	Code Style
       - Follow PEP 8 for Python code formatting.
       - Use docstrings for functions and classes.
-   Testing
+7. Testing
       - Run tests before submitting a PR:
    ```bash
    pytest
