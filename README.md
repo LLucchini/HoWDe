@@ -18,11 +18,20 @@ HoWDe requires **Python 3.6 or later** and a functional **PySpark** environment.
 
 **1. Install PySpark**
 
-Before installing HoWDe, ensure PySpark and Java are properly configured. For detailed setup instructions, please refer to the official [PySpark Installation Guidelines](https://spark.apache.org/docs/latest/api/python/getting_started/install.html#manually-downloading)  
+Before installing HoWDe, ensure PySpark and Java are properly configured. 
+For detailed setup instructions, please refer to the official [PySpark Installation Guidelines](https://spark.apache.org/docs/latest/api/python/getting_started/install.html#manually-downloading)  
 
 > **Installation Note:**  
 > PySpark may raise `Py4JJavaError` if Java or Spark are not properly configured.
 > We recommend checking the [Debugging PySpark and Py4JJavaError Guidelines](https://spark.apache.org/docs/latest/api/python/development/debugging.html)
+
+
+  
+> **Compatibility Note:**  
+>  Once PySpark/Java is correctly configured, HoWDe runs consistently across macOS, Ubuntu, and Windows. The following environments have been tested:
+> - Python 3.9 + PySpark 3.3 + Java 20.0 
+> - Python 3.12 + PySpark 4.0 + Java 17.0
+>   
 
 
 **2. Install HoWDe**
