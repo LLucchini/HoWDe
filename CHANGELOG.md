@@ -15,3 +15,8 @@
 - Reduced in-package features to simplify usage.
 - Expansion of usage documentation with cleaner docs and dedicated tutorials.
 
+## [1.1.1] - 2025-11-22
+### Updates
+- Expanded documentation and tutorials
+- Harmonised HoWDe_labelling core parameters definition for consistency
+
