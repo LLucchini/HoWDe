@@ -1,6 +1,6 @@
 # Change log
 
-## [1.1.1] - 2025-11-22
+## [2.0.0] - 2025-11-22
 ### Updates
 - Expanded documentation and tutorials
 - Improved package version stability (added version and regression tests for pytest)
