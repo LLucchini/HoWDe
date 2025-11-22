@@ -97,10 +97,10 @@ def HoWDe_labelling(
     range_window_work : float or list, default=42
         Size of the sliding window (in days) used to detect work locations. Can be a list.
 
-    C_hours : float or list, default=3
+    C_hours : float or list, default=0.4
         Minimum fraction of night/business hourly-bins with data in a day to be considered valid.
 
-    C_days_H : float or list, default=0.3
+    C_days_H : float or list, default=0.4
         Minimum fraction of days with data in the home detection window.
 
     C_days_W : float or list, default=0.5
