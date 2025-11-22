@@ -5,7 +5,7 @@
 - Expanded documentation and tutorials
 - Improved package version stability (added version and regression tests for pytest)
 - Harmonised HoWDe_labelling core parameters definition for consistency.  
-  **WARNING**: This change has repercussions not only on parameters' names but also on their purpose. Carefully read documentation as the ```default``` usage will return different results.
+  ***WARNING***: This change has repercussions not only on parameters' names but also on their purpose. Carefully read documentation as the ```default``` usage will return different results.
 
 ## [1.1] - 2025-06-23
 ### Updates
