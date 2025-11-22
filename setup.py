@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='HoWDe',
-    version='2.0.0.dev0',
+    version='2.0.0',
     author='Silvia De Sojo Caso, Lorenzo Lucchini, Laura Alessandretti',
     author_email='sdesojoc@gmail.com, lorenzo.f.lucchini.work@gmail.com',
     description='A package for detecting home and work locations from individual timestamped sequences of stop locations.',
