@@ -15,7 +15,12 @@ from .core import (
     pre_process_stops,
 )
 
-from .config import default_config, REQUIRED_COLUMNS, REQUIRED_COLUMNS_WITH_TZ
+from .config import (
+    default_config,
+    thresholds_config,
+    REQUIRED_COLUMNS,
+    REQUIRED_COLUMNS_WITH_TZ,
+)
 
 
 def HoWDe_compute(df_stops, config, output_format="stop"):
@@ -55,22 +60,22 @@ def HoWDe_labelling(
     edit_config_default=None,
     range_window_home=28,
     range_window_work=42,
-    dhn=3,
-    dn_H=0.7,
-    dn_W=0.5,
-    hf_H=0.7,
-    hf_W=0.4,
-    df_W=0.6,
+    C_hours=0.4,
+    C_days_H=0.4,
+    C_days_W=0.5,
+    f_hours_H=0.7,
+    f_hours_W=0.4,
+    f_days_W=0.6,
     output_format="stop",
     verbose=False,
 ):
     """
     Run the full HoWDe labelling pipeline over one or multiple parameter configurations.
-    
+
     This function detects home and work locations based on patterns in stop data.
-    Users can specify a single parameter configuration or provide lists of values to 
+    Users can specify a single parameter configuration or provide lists of values to
     run multiple configurations in parallel.
-    
+
     Parameters
     ----------
     input_data : pyspark.sql.DataFrame
@@ -81,9 +86,9 @@ def HoWDe_labelling(
             - end (long): Unix timestamp indicating the end of the stop
             - tz_hour_start, tz_minute_start (optional): timezone offsets for local time
             - country (optional): country code; if not provided, 'GL0B' will be used
-            
+
     edit_config_default : dict, optional
-        Dictionary to override default preprocessing and detection configurations 
+        Dictionary to override default preprocessing and detection configurations
         (e.g., stop duration thresholds, valid hours for home/work detection).
 
     range_window_home : float or list, default=28
@@ -92,23 +97,23 @@ def HoWDe_labelling(
     range_window_work : float or list, default=42
         Size of the sliding window (in days) used to detect work locations. Can be a list.
 
-    dhn : float or list, default=3
-        Minimum number of night-/work-hour bins required in a day for that day to be considered valid.
+    C_hours : float or list, default=3
+        Minimum fraction of night/business hourly-bins with data in a day to be considered valid.
 
-    dn_H : float or list, default=0.7
-        Maximum fraction of missing days allowed in the home detection window.
+    C_days_H : float or list, default=0.3
+        Minimum fraction of days with data in the home detection window.
 
-    dn_W : float or list, default=0.5
-        Maximum fraction of missing days allowed in the work detection window.
+    C_days_W : float or list, default=0.5
+        Minimum fraction of days with data in the work detection window.
 
-    hf_H : float or list, default=0.7
-        Minimum average fraction of night-hour bins per day for a location to qualify as ‘Home’.
+    f_hours_H : float or list, default=0.7
+        Minimum average fraction of night hourly-bins a location should be visited to be considered for home location detection.
 
-    hf_W : float or list, default=0.4
-        Minimum average fraction of work-hour bins per day for a location to qualify as ‘Work’.
+    f_hours_W : float or list, default=0.4
+        Minium average fraction of business hourly-bins a location should be visited to be considered for work location detection.
 
-    df_W : float or list, default=0.6
-        Minimum fraction of days within the work detection window that a location must be visited to qualify as ‘Work’.
+    f_days_W : float or list, default=0.6
+        Minimum fraction of days a location should be visited within the window to be considered for work location detection.
 
     output_format : str, default="stop"
         Format of the output:
@@ -153,67 +158,93 @@ def HoWDe_labelling(
 
     # 4. Convert parameters to lists
     (
-        dhn,
-        dn_H,
-        dn_W,
+        C_hours,
+        C_days_H,
+        C_days_W,
         range_window_home,
         range_window_work,
-        hf_H,
-        hf_W,
-        df_W,
+        f_hours_H,
+        f_hours_W,
+        f_days_W,
     ) = check_and_convert(
         [
-            dhn,
-            dn_H,
-            dn_W,
+            C_hours,
+            C_days_H,
+            C_days_W,
             range_window_home,
             range_window_work,
-            hf_H,
-            hf_W,
-            df_W,
+            f_hours_H,
+            f_hours_W,
+            f_days_W,
         ]
     )
 
-    # 5. Pre-process stops
+    # 5. Validate parameters thresholds
+    minmax_config = thresholds_config()
+    for param_name, param_list in {
+        "range_window_home": range_window_home,
+        "range_window_work": range_window_work,
+        "C_hours": C_hours,
+        "C_days_H": C_days_H,
+        "C_days_W": C_days_W,
+        "f_hours_H": f_hours_H,
+        "f_hours_W": f_hours_W,
+        "f_days_W": f_days_W,
+    }.items():
+        for param_value in param_list:
+            min_val, max_val = minmax_config[param_name]
+            if not (min_val <= param_value <= max_val):
+                raise ValueError(
+                    f"Parameter {param_name} has invalid value {param_value}. "
+                    f"Must be in range [{min_val}, {max_val}]."
+                )
+
+            if param_name in ("range_window_home", "range_window_work"):
+                if isinstance(param_value, float) and not param_value.is_integer():
+                    raise TypeError(
+                        f"Parameter {param_name} must be an integer, but got {type(param_value).__name__}."
+                    )
+
+    # 6. Pre-process stops
     df_stops = pre_process_stops(input_data, config)
     df_stops = df_stops.cache()
-    
+
     if verbose:
         print("[HowDe] Stops pre-processed")
 
-    # 6. Loop over parameter combinations
+    # 7. Loop over parameter combinations
     output = []
     param_grid = itertools.product(
         range_window_home,
         range_window_work,
-        dhn,
-        dn_H,
-        hf_H,
-        dn_W,
-        hf_W,
-        df_W,
+        C_hours,
+        C_days_H,
+        f_hours_H,
+        C_days_W,
+        f_hours_W,
+        f_days_W,
     )
 
-    for rW_H, rW_W, noneD, noneH, freqH, noneW, freqWh, freqWd in param_grid:
+    for rW_H, rW_W, Ch, Cd_H, fh_H, Cd_W, fh_W, fd_W in param_grid:
         config_ = config.copy()
         config_.update(
             {
                 "range_window_home": rW_H,
                 "range_window_work": rW_W,
-                "dhn": F.lit(noneD),
-                "dn_H": F.lit(noneH),
-                "hf_H": F.lit(freqH),
-                "dn_W": F.lit(noneW),
-                "hf_W": F.lit(freqWh),
-                "df_W": F.lit(freqWd),
+                "C_hours": F.lit(Ch),
+                "C_days_H": F.lit(Cd_H),
+                "f_hours_H": F.lit(fh_H),
+                "C_days_W": F.lit(Cd_W),
+                "f_hours_W": F.lit(fh_W),
+                "f_days_W": F.lit(fd_W),
             }
         )
 
         if verbose:
             print(
                 f"[HoWDe] Running config: "
-                f"rw_H={rW_H}, rw_W={rW_W}, dn_H={noneH}, hf_H={freqH}, "
-                f"dn_W={noneW}, hf_W={freqWh}, df_W={freqWd}"
+                f"rw_H={rW_H}, rw_W={rW_W}, C_hours={Ch}, C_days_H={Cd_H}, C_days_W={Cd_W}, "
+                f"f_hours_H={fh_H}, f_hours_W={fh_W}, f_days_W={fd_W}"
             )
 
         df_labeled = HoWDe_compute(df_stops, config_, output_format=output_format)

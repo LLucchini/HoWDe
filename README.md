@@ -18,11 +18,20 @@ HoWDe requires **Python 3.6 or later** and a functional **PySpark** environment.
 
 **1. Install PySpark**
 
-Before installing HoWDe, ensure PySpark and Java are properly configured. For detailed setup instructions, please refer to the official [PySpark Installation Guidelines](https://spark.apache.org/docs/latest/api/python/getting_started/install.html#manually-downloading)  
+Before installing HoWDe, ensure PySpark and Java are properly configured. 
+For detailed setup instructions, please refer to the official [PySpark Installation Guidelines](https://spark.apache.org/docs/latest/api/python/getting_started/install.html#manually-downloading)  
 
-> **Note for Windows users:**  
+> **Installation Note:**  
 > PySpark may raise `Py4JJavaError` if Java or Spark are not properly configured.
 > We recommend checking the [Debugging PySpark and Py4JJavaError Guidelines](https://spark.apache.org/docs/latest/api/python/development/debugging.html)
+
+
+  
+> **Compatibility Note:**  
+>  Once PySpark/Java is correctly configured, HoWDe runs consistently across macOS, Ubuntu, and Windows. The following environments have been tested:
+> - Python 3.9 + PySpark 3.3 + Java 20.0 
+> - Python 3.12 + PySpark 4.0 + Java 17.0
+>   
 
 
 **2. Install HoWDe**
@@ -43,12 +52,12 @@ def HoWDe_labelling(
     edit_config_default=None,
     range_window_home=28,
     range_window_work=42,
-    dhn=3,
-    dn_H=0.7,
-    dn_W=0.5,
-    hf_H=0.7,
-    hf_W=0.4,
-    df_W=0.6,
+    C_hours=0.4,
+    C_days_H=0.4,
+    C_days_W=0.5,
+    f_hours_H=0.7,
+    f_hours_W=0.4,
+    f_days_W=0.6,
     output_format="stop",
     verbose=False,
 ):
@@ -87,7 +96,7 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 <!-- 
 - `range_window_home` (float or list): Sliding window size (in days) used to detect home locations.
 - `range_window_work` (float or list): Size of the window used to detect work locations. 
-- `dhn` (float or list): Minimum number of night-/work-hour bins with data required in a day. 
+- `C_hours` (float or list): Minimum number of night-/work-hour bins with data required in a day. 
 - `dn_H` (float or list):  Maximum fraction of missing days allowed within the window for a home location to be detected on a given day. 
 - `dn_W` (float or list):  Maximum fraction of missing days allowed within the window for a work location to be detected on a given day. 
 - `hf_H` (float or list): Minimum average fraction of night-hour bins (across days in the window) required for a location to qualify as ‘Home’. 
@@ -97,21 +106,24 @@ HoWDe expects the input to be a **PySpark DataFrame** containing one row per use
 
 | Parameter | Type | Description | Suggested value and range |
 |:--|:--|:--|:--|
-| `range_window_home` | *float* or *list* | Sliding window size (in days) used to detect home locations. | 28 [14-112] |
-| `range_window_work` | *float* or *list* | Sliding window size (in days) used to detect work locations. | 42 [14-112] |
-| `dhn` | *float* or *list* | Minimum number of night-/work-hour bins with data required per day. | 3 [3-6]|
-| `dn_H` | *float* or *list* | Maximum fraction of missing days allowed within the window for a home location to be detected. | 0.7 [0.5-0.9]|
-| `dn_W` | *float* or *list* | Maximum fraction of missing days allowed within the window for a work location to be detected. | 0.5 [0.4-0.6]|
-| `hf_H` | *float* or *list* | Minimum average fraction of night-hour bins (across days in the window) required for a location to qualify as *Home*. | 0.7 [0.5-0.9] |
-| `hf_W` | *float* or *list* | Minimum average fraction of work-hour bins (across days in the window) required for a location to qualify as *Work*. |  0.4 [0.4-0.6] |
-| `df_W` | *float* or *list* | Minimum fraction of days within the window a location must be visited to qualify as *Work*. | 0.6 [0.5-0.8] |
+| `range_window_home` | *int* or *list* | Sliding window size (in days) used to detect home locations. | 28 [14-112] |
+| `range_window_work` | *int* or *list* | Sliding window size (in days) used to detect work locations. | 42 [14-112] |
+| `C_hours` | *float* or *list* | Minimum fraction of night/business hourly-bins with data in a day | 0.4 [0.2-0.9]|
+| `C_days_H` | *float* or *list* | Minimum fraction of days with data in a window | 0.4 [0.1-0.6]|
+| `C_days_W` | *float* or *list* | Minimum fraction of days with data in a window | 0.5 [0.4-0.6]|
+| `f_hours_H` | *float* or *list* | Minimum average fraction of night hourly-bins (across days in the window) required for a location to qualify as *Home*. | 0.7 [0.5-0.9] |
+| `f_hours_W` | *float* or *list* | Minimum average fraction of business hourly-bins (across days in the window) required for a location to qualify as *Work*. |  0.4 [0.4-0.6] |
+| `f_days_W` | *float* or *list* | Minimum fraction of days within the window a location should be visited to qualify as *Work*. | 0.6 [0.5-0.8] |
 
 
 
 All parameters listed above can also be provided as lists to explore multiple configurations in a single run.
 
-💡 **Tuning Tip:** When adjusting detection parameters, start by refining the data quality constraints (`dn_H`, `dn_W`) and frequency thresholds (`hf_H`, `hf_W`, `df_W`). These strongly influence how strict the algorithm is in identifying consistent home/work locations.
-<!-- Suggested parameter ranges to explore  -->
+💡 **Tuning Tip:** 
+When adjusting detection parameters, start by refining the temporal coverage filters `C_days_H`, `C_days_W` to match the characteristics of your data. 
+Once these are well aligned, tune the estimation thresholds `f_hours_H`, `f_hours_W`, `f_days_W` based on the case of study according to the specifics of your case study. These estimation thresholds play a major role in determining how strictly the algorithm identifies consistent home and work locations.
+
+While we provide recommended parameter ranges to guide your exploration, the hard-coded limits in [`howde/config.py`](howde/config.py) are intentionally more relaxed—they simply prevent non-sensical values. Inputs falling outside these hard limits will raise an error.
 
 
 ### 🔧 Other Parameters
@@ -157,12 +169,12 @@ labeled_data = HoWDe_labelling(
     input_data,
     range_window_home=28,
     range_window_work=42,
-    dhn=3,
-    dn_H=0.7,
-    dn_W=0.5,
-    hf_H=0.7,
-    hf_W=0.4,
-    df_W=0.6,
+    C_hours=0.4,
+    C_days_H=0.4,
+    C_days_W=0.5,
+    f_hours_H=0.7,
+    f_hours_W=0.4,
+    f_days_W=0.6,
     output_format="stop",
     verbose=False,
 )
