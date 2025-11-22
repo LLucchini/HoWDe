@@ -19,4 +19,5 @@
 ### Updates
 - Expanded documentation and tutorials
 - Harmonised HoWDe_labelling core parameters definition for consistency
+- Improved package version stability (added version and regression tests for pytest)
 
