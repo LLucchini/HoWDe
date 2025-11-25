@@ -9,7 +9,7 @@
     - **C_days (former dh_W,H)**: Now defined as the minimum fraction of days with data within a window. This replaces the previous definition based on the maximum fraction of days with missing data (i.e, now C_days = 1 - dh_W,H).
     - Default parameters have been updated to reflect the new logic.
       
-  ***WARNING***: These changes affect both parameter names and their underlying code. Please consult the updated documentation for full details.
+  ***WARNING***: These changes affect both parameter names and their underlying usage. Running HoWDe with the default configuration will produce different results compared to older versions. Please consult the updated documentation for full details.
 
 - New parameter validation error: Parameters falling outside the allowed range in `config.py` or having an incorrect type now raise a `ValueError` to prevent unintended configurations.
 
