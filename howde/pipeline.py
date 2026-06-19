@@ -39,7 +39,11 @@ def HoWDe_compute(df_stops, config, output_format="stop"):
     Returns
     -------
     pyspark.sql.DataFrame
-        Labelled stops with home/work assignments.
+        Labelled stops with home/work assignments. Includes columns:
+        - 'detect_H_loc': detected home location per day
+        - 'detect_W_loc': detected work location per day (None if not detected)
+        - 'location_type': 'H', 'W', or 'O'
+        - 'work_window_has_data': bool, True when the sliding window contained weekday data
     """
     df_traj = get_hourly_trajectories(df_stops, config)
     df_traj = find_home(df_traj, config)
@@ -127,6 +131,9 @@ def HoWDe_labelling(
     -------
     pyspark.sql.DataFrame or list of dict
         If a single configuration is specified, returns a PySpark DataFrame with labeled stops.
+        Columns include: 'detect_H_loc', 'detect_W_loc', 'location_type', and
+        'work_window_has_data' (bool: True when the sliding window contained weekday data,
+        useful for distinguishing no-data days from days where no location passed the filter).
         If multiple configurations are explored, returns a list of dicts:
             - 'configs': the parameter settings used
             - 'res': the resulting labeled DataFrame for each configuration

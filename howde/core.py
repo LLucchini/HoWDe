@@ -741,6 +741,14 @@ def find_work(df_tH, config):
         sw_reddic(F.col("EmpPot_dicSW_dVis"), f_days_W),
     )
 
+    # Capture whether any weekday data existed in the sliding window (needed for commuter status)
+    # True  → data exists but may have been filtered out (No Work)
+    # False/null → no weekday data in window at all (None / unknown)
+    df_tH = df_tH.withColumn(
+        "work_window_has_data",
+        F.col("EmpPot_dicSW_dVis").isNotNull() | F.col("EmpPot_dicSW_h").isNotNull(),
+    )
+
     # Step 3: Pick top location prioritizing temporal regularity
     df_tH = df_tH.withColumn(
         "EmpPot_loc",
@@ -788,6 +796,8 @@ def get_stop_level(df_stops, df_traj):
         - 'detect_H_loc': Detected home location
         - 'detect_W_loc': Detected work location
         - 'location_type': 'H', 'W', or 'O' (other)
+        - 'work_window_has_data': bool, True when the sliding window contained weekday data
+          (distinguishes 'no data' from 'data but no location passed frequency filter')
     """
     cols = [
         "useruuid",
@@ -800,11 +810,12 @@ def get_stop_level(df_stops, df_traj):
         "location_type",
         "HomPot_loc",
         "EmpPot_loc",
+        "work_window_has_data",
     ]
 
     # Merge in detected H/W locations by date and user
     hw_s = df_traj.select(
-        ["useruuid", "s_date", "HomPot_loc", "EmpPot_loc"]
+        ["useruuid", "s_date", "HomPot_loc", "EmpPot_loc", "work_window_has_data"]
     ).dropDuplicates()
 
     stops_hw = df_stops.join(hw_s, on=["useruuid", "s_date"], how="left")
