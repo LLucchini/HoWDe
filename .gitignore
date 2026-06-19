@@ -15,3 +15,6 @@ dist/
 
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+
+# Claude Code local config (never push)
+.claude/
